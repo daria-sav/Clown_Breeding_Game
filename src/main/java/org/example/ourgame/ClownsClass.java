@@ -6,11 +6,12 @@ import java.util.Random;
 public class ClownsClass implements Comparable<ClownsClass> {
     private String name;
     private int clownLevel;
+    private String picture;
 
-    // konstruktor
-    public ClownsClass(String name, int clownLevel) {
+    public ClownsClass(String name, int clownLevel, String picture) {
         this.name = name;
         this.clownLevel = clownLevel;
+        this.picture = picture;
     }
 
     //getterid ja setterid
@@ -22,14 +23,17 @@ public class ClownsClass implements Comparable<ClownsClass> {
         this.name = name;
     }
 
-    public int getLevel() {
+    public int getClownLevel() {
         return clownLevel;
     }
 
-    public void setLevel(int level) {
-        this.clownLevel = level;
+    public String getPicture() {
+        return picture;
     }
 
+    public void setPicture(String picture) {
+        this.picture = picture;
+    }
     /**
      * antud meetod simuleerib klouni peksmist ja arvutab välja teenitud pisarate arvu.
      * @return - teenitud raha

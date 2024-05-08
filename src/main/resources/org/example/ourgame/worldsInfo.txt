@@ -1,8 +1,0 @@
-//world lvl; clowns min lvl; background; decorations
-
-1; 1; name; name
-2; 7; name; name
-3; 13; name; name
-4; 19; name; name
-5; 25; name; name
-6; 31; name; name

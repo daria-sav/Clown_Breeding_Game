@@ -5,14 +5,20 @@ import org.example.ourgame.ClownsClass;
 import org.example.ourgame.LevelInfo;
 import org.example.ourgame.WorldLevel;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
+
+
 
 public class World {
     private static int clownCounter = 0;
     //klouni lisamise meetod
-    public static int addClown(int level, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, LevelInfo> levelInfoMap, int maxOpenedClown) {
-        ClownsClass clown = new ClownsClass(levelInfoMap.get(level).getName(), level);
+    public static int addClown(int level, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, String[]> levelInfoMap, int maxOpenedClown) {
+        ClownsClass clown = new ClownsClass(levelInfoMap.get(level)[0], level, "");
         clownIndex.put(clownCounter++, clown);
         System.out.println("Palju õnne! Sul sündis uus kloun " + clown.getName() + "! Võta tema kasvutust tõsiselt!");
 
@@ -33,15 +39,15 @@ public class World {
         }
     }
     //klouni aretuse meetod
-    public static void breeding (int clown1Indeks, int clown2Indeks, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, LevelInfo> levelInfoMap, int maxOpenedClown, HashMap<Integer, WorldLevel> ourWorlds, int ourWorldLevel, boolean[] openedWorldsList) {
+    public static void breeding (int clown1Indeks, int clown2Indeks, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, String[]> levelInfoMap, int maxOpenedClown, HashMap<Integer, WorldLevel> ourWorlds, int ourWorldLevel, boolean[] openedWorldsList) {
         if (clownIndex.containsKey(clown1Indeks) && clownIndex.containsKey(clown2Indeks)) {
             //kas klounid on yldse olemas
             ClownsClass clown1 = clownIndex.get(clown1Indeks);
             ClownsClass clown2 = clownIndex.get(clown2Indeks);
 
             //kas nende tase on sama
-            if (clown1.getLevel() == clown2.getLevel()) {
-                int newLevel = clown1.getLevel() + 1;
+            if (clown1.getClownLevel() == clown2.getClownLevel()) {
+                int newLevel = clown1.getClownLevel() + 1;
 
                 clownIndex.remove(clown1Indeks);
                 clownIndex.remove(clown2Indeks);
@@ -69,8 +75,8 @@ public class World {
         }
     }
     //klouni ostmise meetod
-    public static void buying(int moneyInWallet, int clownLevel, HashMap<Integer, LevelInfo> levelInfoMap, HashMap<Integer, ClownsClass> currentWorldClowns, int maxOpenedClown) {
-        int clownCost = levelInfoMap.get(clownLevel).getCost();
+    public static void buying(int moneyInWallet, int clownLevel, HashMap<Integer, String[]> levelInfoMap, HashMap<Integer, ClownsClass> currentWorldClowns, int maxOpenedClown) {
+        int clownCost = (int) (Math.pow(clownLevel, 3) + 5);
         if(clownCost <= moneyInWallet) {
             moneyInWallet -= clownCost;
             System.out.println("Ostmine õnnestus!" + "Sa raiskasid " + clownCost + " pisaraid tühise klouni peale, ning sul jäi täpselt " + moneyInWallet + " pisaraid <3");
@@ -80,59 +86,42 @@ public class World {
         }
     }
 
-    public static void main(String[] args) {
+    private static HashMap<Integer, String[]> readFileClowns (String faliName) {
+        //clowns from file
+        File clownsFile = new File("textFiles", faliName);
+        HashMap<Integer, String[]> clowns = new HashMap<>();
 
+        try (BufferedReader br = new BufferedReader(new FileReader(clownsFile))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (!line.isEmpty() && !line.startsWith("//")) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 3) {
+                        String[] values = {parts[0].trim(), parts[2].trim()};
+                        try {
+                            int key = Integer.parseInt(parts[1].trim());
+                            clowns.put(key, values);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid number format: " + parts[1].trim());
+                        }
+                    } else {
+                        System.out.println("Invalid line format: " + line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return clowns;
+    }
+
+
+    public static void main(String[] args) {
+        //System.out.println(readFileClowns("clownsInfo.txt"));
         Thread gameThread = new Thread(() -> {
 
-            HashMap<Integer, LevelInfo> levelInfoMap = new HashMap<>();
-            //klounid
-            //world 1
-            levelInfoMap.put(1, new LevelInfo("Peeter Paanika", 1));
-            levelInfoMap.put(2, new LevelInfo("Kertu Sambuka", 2));
-            levelInfoMap.put(3, new LevelInfo("Bim Bam-Boom", 3));
-            levelInfoMap.put(4, new LevelInfo("Pipi Pikksukk", 4));
-            levelInfoMap.put(5, new LevelInfo("Irmeli Imelik", 5));
-            levelInfoMap.put(6, new LevelInfo("Anton Rahu", 6));
-
-            //world 2
-            levelInfoMap.put(7, new LevelInfo("lvl_7", 7));
-            levelInfoMap.put(8, new LevelInfo("lvl_8", 8));
-            levelInfoMap.put(9, new LevelInfo("lvl_9", 9));
-            levelInfoMap.put(10, new LevelInfo("lvl_10", 10));
-            levelInfoMap.put(11, new LevelInfo("lvl_11", 11));
-            levelInfoMap.put(12, new LevelInfo("lvl_12", 12));
-
-            //world 3
-            levelInfoMap.put(13, new LevelInfo("lvl_13", 13));
-            levelInfoMap.put(14, new LevelInfo("lvl_14", 14));
-            levelInfoMap.put(15, new LevelInfo("lvl_15", 15));
-            levelInfoMap.put(16, new LevelInfo("lvl_16", 16));
-            levelInfoMap.put(17, new LevelInfo("lvl_17", 17));
-            levelInfoMap.put(18, new LevelInfo("lvl_18", 18));
-
-            //world 4
-            levelInfoMap.put(19, new LevelInfo("lvl_19", 19));
-            levelInfoMap.put(20, new LevelInfo("lvl_20", 20));
-            levelInfoMap.put(21, new LevelInfo("lvl_21", 21));
-            levelInfoMap.put(22, new LevelInfo("lvl_22", 22));
-            levelInfoMap.put(23, new LevelInfo("lvl_23", 23));
-            levelInfoMap.put(24, new LevelInfo("lvl_24", 24));
-
-            //world 5
-            levelInfoMap.put(25, new LevelInfo("lvl_25", 25));
-            levelInfoMap.put(26, new LevelInfo("lvl_26", 26));
-            levelInfoMap.put(27, new LevelInfo("lvl_27", 27));
-            levelInfoMap.put(28, new LevelInfo("lvl_28", 28));
-            levelInfoMap.put(29, new LevelInfo("lvl_29", 29));
-            levelInfoMap.put(30, new LevelInfo("lvl_30", 30));
-
-            //world 6
-            levelInfoMap.put(31, new LevelInfo("lvl_19", 31));
-            levelInfoMap.put(32, new LevelInfo("lvl_20", 32));
-            levelInfoMap.put(33, new LevelInfo("lvl_21", 33));
-            levelInfoMap.put(34, new LevelInfo("lvl_22", 36));
-            levelInfoMap.put(35, new LevelInfo("lvl_23", 37));
-            levelInfoMap.put(36, new LevelInfo("lvl_24", 38));
+            HashMap<Integer, String[] > levelInfoMap = readFileClowns("clownsInfo.txt");
 
             //stardikapital
             int moneyInWallet = 6;
@@ -219,10 +208,11 @@ public class World {
                 } else {
                     //on võimalik osta 3 lvl-i võrra vähem
                     for (int i = 1; i <= maxOpenedClown - 3; i++) {
-                        LevelInfo info = levelInfoMap.get(i);
-                        System.out.println("Nimi: " + info.getName() +
+
+                        String[] info = levelInfoMap.get(i);
+                        System.out.println("Nimi: " + info[0] +
                                 " Lvl: " + i +
-                                " Hind: " + info.getCost() + " pisaraid\n");
+                                " Hind: " + (Math.pow(i, 3) + 5) + " pisaraid\n");
                     }
                 }
                 System.out.println("Esimese taseme klouni ostmiseks vajuta '1'!");
@@ -337,10 +327,10 @@ public class World {
                             ////если будем менять формулу стоимости, то не забыть поменять этот sout
                         } else {
                             for (int i = 1; i <= maxOpenedClown - 3; i++) {
-                                LevelInfo info = levelInfoMap.get(i);
-                                System.out.println("Nimi: " + info.getName() +
+                                String[] info = levelInfoMap.get(i);
+                                System.out.println("Nimi: " + info[0] +
                                         " Lvl: " + i +
-                                        " Hind: " + info.getCost() + " pisaraid\n");
+                                        " Hind: " + (Math.pow(i, 3) + 5) + " pisaraid\n");
                             }
                         }
                         System.out.println("Valige klouni tase, et teda osta!");
