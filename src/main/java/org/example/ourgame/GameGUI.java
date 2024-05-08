@@ -5,7 +5,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -30,18 +29,16 @@ public class GameGUI extends Application {
         juur.setBackground(new Background(tagaplaan));
 
         // Создание кнопки-картинки
-        ImageView shopButton = createButton("shopButton.jpg");
-        // Обработка события при клике на кнопку
+        Button shopButton = createButton("shopButton.jpg");
         shopButton.setOnMouseClicked(event -> {
-            System.out.println("Nupp pood oli vajutatud!");
+            System.out.println("Nupp pood oli vajutatud");
+            ShopWindow.display(); // Отображение окна магазина при нажатии на кнопку
         });
 
-        ImageView worldSwitchButton = createButton("worldButton.jpg");
-        worldSwitchButton.setOnMouseClicked(event -> {
-            System.out.println("Nupp maailm oli vajutatud!");
-        });
+        Button worldSwitchButton = createButton("worldButton.jpg");
+        worldSwitchButton.setOnMouseClicked(event -> System.out.println("Nupp maailm oli vajutatud!"));
 
-        ImageView galleryButton = createButton("clownButton.jpg");
+        Button galleryButton = createButton("clownButton.jpg");
         galleryButton.setOnMouseClicked(event -> {
             System.out.println("Nupp galerii oli vajutatud!");
         });
@@ -68,11 +65,11 @@ public class GameGUI extends Application {
         pealava.show();
     }
 
-    private ImageView createButton(String pilt) {
-        Image nuppuPilt = new Image(pilt);
-        ImageView nupp = new ImageView(nuppuPilt);
-        nupp.setPreserveRatio(true);
-        nupp.setFitWidth(100);
-        return nupp;
+    private Button createButton(String pilt) {
+        Button button = new Button();
+        button.setStyle("-fx-background-image: url('" + pilt + "'); " +
+                "-fx-background-size: cover;");
+        button.setPrefSize(100, 100); // Размер кнопки
+        return button;
     }
 }
