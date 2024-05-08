@@ -1,0 +1,50 @@
+// nimi; lvl; picture name
+//HashMap<Integer(lvl), String(namePicture[0](klowns name), namePicture[1](picture link))>
+
+//word 1
+Peeter Paanika; 1; name
+Kertu Sambuka; 2; name
+Bim Bam-Boom; 3; name
+Pipi Pikksukk; 4; name
+Irmeli Imelik; 5; name
+Anton Rahu; 6; name
+
+//word 2
+lvl_7; 7; name
+lvl_8; 8; name
+lvl_9; 9; name
+lvl_10; 10; name
+lvl_11; 11; name
+lvl_12; 12; name
+
+//word 3
+lvl_13; 13; name
+lvl_14; 14; name
+lvl_15; 15; name
+lvl_16; 16; name
+lvl_17; 17; name
+lvl_18; 18; name
+
+//word 4
+lvl_19; 19; name
+lvl_20; 20; name
+lvl_21; 21; name
+lvl_22; 22; name
+lvl_23; 23; name
+lvl_24; 24; name
+
+//world 5
+lvl_25; 25; name
+lvl_26; 26; name
+lvl_27; 27; name
+lvl_28; 28; name
+lvl_29; 29; name
+lvl_30; 30; name
+
+//world 6
+lvl_31; 31; name
+lvl_32; 32; name
+lvl_33; 33; name
+lvl_34; 34; name
+lvl_35; 35; name
+lvl_36; 36; name
