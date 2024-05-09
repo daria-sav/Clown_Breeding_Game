@@ -1,6 +1,7 @@
 package org.example.ourgame;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,42 +22,52 @@ public class GameGUI extends Application {
     public void start(Stage pealava) {
 
         // Создание корневого контейнера
-        StackPane juur = new StackPane();
+        BorderPane juur = new BorderPane();
 
         // Фон игры
         Image tagaplaaniPilt = new Image("background.jpg");
         BackgroundImage tagaplaan = new BackgroundImage(tagaplaaniPilt, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         juur.setBackground(new Background(tagaplaan));
 
-        // Создание кнопки-картинки
+        // Создание кнопок
         Button shopButton = createButton("shopButton.jpg");
-        shopButton.setOnMouseClicked(event -> {
+        shopButton.setOnAction(event -> {
             System.out.println("Nupp pood oli vajutatud");
-            ShopWindow.display(); // Отображение окна магазина при нажатии на кнопку
+            ShopWindow.display();
         });
 
         Button worldSwitchButton = createButton("worldButton.jpg");
-        worldSwitchButton.setOnMouseClicked(event -> System.out.println("Nupp maailm oli vajutatud!"));
+        worldSwitchButton.setOnAction(event -> System.out.println("Nupp maailm oli vajutatud!"));
 
         Button galleryButton = createButton("clownButton.jpg");
-        galleryButton.setOnMouseClicked(event -> {
+        galleryButton.setOnAction(event -> {
             System.out.println("Nupp galerii oli vajutatud!");
         });
 
-        // Размещение кнопок в разных углах экрана
-        VBox leftTopBox = new VBox(shopButton);
-        VBox.setVgrow(shopButton, Priority.ALWAYS);
+        // Размещение кнопки магазина в левом верхнем углу
+        HBox leftTopBox = new HBox(shopButton);
         leftTopBox.setAlignment(Pos.TOP_LEFT);
+        HBox.setMargin(shopButton, new Insets(10));
 
+        // Размещение кнопки мира в правом верхнем углу
         HBox rightTopBox = new HBox(worldSwitchButton);
-        HBox.setHgrow(worldSwitchButton, Priority.ALWAYS);
         rightTopBox.setAlignment(Pos.TOP_RIGHT);
+        HBox.setMargin(worldSwitchButton, new Insets(10));
 
+        // Размещение кнопки галереи в правом нижнем углу
         VBox rightBottomBox = new VBox(galleryButton);
-        VBox.setVgrow(galleryButton, Priority.ALWAYS);
         rightBottomBox.setAlignment(Pos.BOTTOM_RIGHT);
+        VBox.setMargin(galleryButton, new Insets(10));
 
-        juur.getChildren().addAll(leftTopBox, rightTopBox, rightBottomBox);
+        // Объединение левой и правой верхних кнопок в один верхний контейнер
+        HBox topContainer = new HBox(leftTopBox, rightTopBox);
+        topContainer.setFillHeight(true); // Устанавливаем контейнер на полную высоту
+        HBox.setHgrow(leftTopBox, Priority.ALWAYS); // Делаем так, чтобы контейнеры растягивались и занимали доступное пространство
+        HBox.setHgrow(rightTopBox, Priority.ALWAYS);
+
+        // Размещение контейнеров в корневом контейнере
+        juur.setTop(topContainer);
+        juur.setBottom(rightBottomBox);
 
         // Создание сцены и отображение главного окна
         Scene stseen = new Scene(juur, SCREEN_WIDTH, SCREEN_HEIGHT);
