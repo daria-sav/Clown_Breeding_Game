@@ -86,7 +86,7 @@ public class World {
         }
     }
 
-    private static HashMap<Integer, String[]> readFileClowns (String faliName) {
+    public static HashMap<Integer, String[]> readFileClowns (String faliName) {
         //clowns from file
         File clownsFile = new File("textFiles", faliName);
         HashMap<Integer, String[]> clowns = new HashMap<>();

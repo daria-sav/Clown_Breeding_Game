@@ -9,10 +9,14 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class GameGUI extends Application {
 
     private static final int SCREEN_WIDTH = 800;
-    private static final int SCREEN_HEIGHT = 600;
+    private static final int SCREEN_HEIGHT = 470;
 
     public static void main(String[] args) {
         launch(args);
@@ -25,7 +29,7 @@ public class GameGUI extends Application {
         BorderPane juur = new BorderPane();
 
         // Фон игры
-        Image tagaplaaniPilt = new Image("background.jpg");
+        Image tagaplaaniPilt = new Image("wallpaper.jpg");
         BackgroundImage tagaplaan = new BackgroundImage(tagaplaaniPilt, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         juur.setBackground(new Background(tagaplaan));
 
@@ -33,16 +37,26 @@ public class GameGUI extends Application {
         Button shopButton = createButton("shopButton.jpg");
         shopButton.setOnAction(event -> {
             System.out.println("Nupp pood oli vajutatud");
-            ShopWindow.display();
+            // testimine
+            List<ClownsClass> availableClowns = new ArrayList<>(); // Получение списка клоунов
+            availableClowns.addAll(Arrays.asList(
+                    new ClownsClass("Lobzik♡", 1, "clown1.png"),
+                    new ClownsClass("clown2", 2, "clown2.png"),
+                    new ClownsClass("clown3", 3, "clown3.png"),
+                    new ClownsClass("clown4", 4, "clown4.png"),
+                    new ClownsClass("clown5", 5, "clown5.png"),
+                    new ClownsClass("clown6", 6, "clown6.png")
+            ));
+            // testimine
+            ShopWindow shopWindow = new ShopWindow(availableClowns);
+            shopWindow.showAndWait(); // Отображение окна магазина как модального
         });
 
         Button worldSwitchButton = createButton("worldButton.jpg");
         worldSwitchButton.setOnAction(event -> System.out.println("Nupp maailm oli vajutatud!"));
 
         Button galleryButton = createButton("clownButton.jpg");
-        galleryButton.setOnAction(event -> {
-            System.out.println("Nupp galerii oli vajutatud!");
-        });
+        galleryButton.setOnAction(event -> System.out.println("Nupp galerii oli vajutatud!"));
 
         // Размещение кнопки магазина в левом верхнем углу
         HBox leftTopBox = new HBox(shopButton);
