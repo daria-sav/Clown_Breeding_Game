@@ -14,11 +14,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ShopWindow extends Stage {
 
-    public ShopWindow(List<ClownsClass> availableClowns) {
+    private GameController gameController;
+
+    public ShopWindow(GameController gameController, List<ClownsClass> availableClowns) {
+        this.gameController = gameController;
         this.initModality(Modality.APPLICATION_MODAL);
         this.setTitle("Clowns Shop");
 
@@ -38,7 +42,13 @@ public class ShopWindow extends Stage {
             nameAndPrice.setFont(Font.font("Arial", FontWeight.BOLD, 14));
 
             Button buyButton = new Button("Buy");
-            buyButton.setOnAction(event -> buyClown(clown));
+            buyButton.setOnAction(event -> {
+                try {
+                    buyClown(clown);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             clownRow.getChildren().addAll(clownImage, nameAndPrice, buyButton);
             clownsBox.getChildren().add(clownRow);
@@ -48,8 +58,10 @@ public class ShopWindow extends Stage {
         this.setScene(scene);
     }
 
-    private void buyClown(ClownsClass clown) {
-        System.out.println("Ostetud kloun " + clown.getName());
-        this.close(); // Закрыть окно после покупки
+    private void buyClown(ClownsClass clown) throws IOException {
+        if (gameController.buyClown(clown.getClownLevel())) {
+            System.out.println("Клоун " + clown.getName() + " куплен успешно!");
+            // далее написать полную логику покупки (выпадение коробки + снятие денег)
+        }
     }
 }
