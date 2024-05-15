@@ -1,6 +1,7 @@
 package org.example.ourgame;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -35,7 +36,7 @@ public class GameGUI extends Application {
 
     @Override
     public void start(Stage pealava) {
-        gameController = new GameController(6, 6, this); // начальный баланс и миры, потом поменять логику maxOpenedClown
+        gameController = new GameController(12, 6, this); // начальный баланс и миры, потом поменять логику maxOpenedClown
 
         BorderPane root = new BorderPane();
         setupBackground(root);
@@ -112,6 +113,9 @@ public class GameGUI extends Application {
         pealava.show();
 
         updateClownDisplay(); // Показать клоунов
+
+        // Запускаем туториал после полной загрузки интерфейса
+        Platform.runLater(this::startGameTutorial);
     }
 
     private void setupBackground(BorderPane root) {
@@ -222,6 +226,25 @@ public class GameGUI extends Application {
 
     public void updateWorldsDisplay() {
         worldSelector.setItems(FXCollections.observableArrayList(getWorldNames())); // Обновление списка в ComboBox
+    }
+
+    public void startGameTutorial() {
+        // Предоставляем первого клоуна
+        gameController.buyClown(1); // Покупаем первого клоуна уровня 1
+        showAlert("Welcome!", "Welcome to the Clown Breeding Game!\n" +
+                "You have received your first clown to get started.\n" +
+                "Check out your new clown in the clown display area!");
+
+        // Дальнейшие инструкции игроку
+        showAlert("Tutorial", "This is a brief tutorial to get you started:\n" +
+                "- Use the 'Shop' button to buy new clowns.\n" +
+                "- Click on clowns in the clown area to slap them and earn tears.\n" +
+                "- Use the 'World' button to switch between different worlds as you unlock them.\n" +
+                "- Breed clowns by selecting two of the same level when you have more than one.");
+
+        // Предложение продолжить самостоятельное исследование игры
+        showAlert("Explore", "Now, feel free to explore the game on your own.\n" +
+                "Try to breed clowns to unlock new levels and worlds!");
     }
 
 }

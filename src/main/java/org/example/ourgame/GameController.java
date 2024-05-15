@@ -1,8 +1,4 @@
 package org.example.ourgame;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.io.*;
 import java.util.*;
@@ -38,6 +34,9 @@ public class GameController {
         worlds.put(1, new WorldLevel(1, 1, "background1.jpg"));
         worlds.put(2, new WorldLevel(2, 7, "wallpaper.jpg"));
         worlds.put(3, new WorldLevel(3, 13, "wallpaper.jpg"));
+
+        // Установка начального мира после инициализации
+        setCurrentWorld(1);
     }
 
     public void setWorlds(HashMap<Integer, WorldLevel> worlds) {
@@ -78,15 +77,18 @@ public class GameController {
 
     public void buyClown(int clownLevel) {
         double cost = Math.pow(clownLevel, 3) + 5;
-        if (cost <= moneyInWallet) {
+        if (cost <= moneyInWallet && currentWorld != null) {
             moneyInWallet -= cost;
             int newMaxLevel = World.addClown(clownLevel, currentWorld.getClownIndex(), clownInfoMap, maxOpenedClown);
             maxOpenedClown = Math.max(maxOpenedClown, newMaxLevel);
-            // Требуется обновить GUI
-            gameGUI.updateClownDisplay(); // Обновление отображения клоунов
-            gameGUI.updateMoneyDisplay(); // Обновление отображения денег
+            // После добавления клоуна обновляем отображение
+            gameGUI.updateClownDisplay();
+            gameGUI.updateMoneyDisplay();
+        } else {
+            LOGGER.warning("Failed to buy clown: Insufficient funds or no current world.");
         }
     }
+
 
     public void slapClown(ClownsClass clown) {
         double moneyEarned = clown.slapTheClown();

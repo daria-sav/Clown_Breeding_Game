@@ -13,12 +13,11 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 
-
 public class World {
     private static int clownCounter = 0;
     //klouni lisamise meetod
     public static int addClown(int level, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, String[]> levelInfoMap, int maxOpenedClown) {
-        ClownsClass clown = new ClownsClass(levelInfoMap.get(level)[0], level, "");
+        ClownsClass clown = new ClownsClass(levelInfoMap.get(level)[0], level, "clown1.png");
         clownIndex.put(clownCounter++, clown);
         System.out.println("Palju õnne! Sul sündis uus kloun " + clown.getName() + "! Võta tema kasvutust tõsiselt!");
 
