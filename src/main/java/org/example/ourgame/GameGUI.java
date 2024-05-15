@@ -1,11 +1,11 @@
 package org.example.ourgame;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
@@ -25,25 +25,54 @@ public class GameGUI extends Application {
     private Label moneyLabel;
     private VBox worldList; // Панель для списка миров
     private GameController gameController;
+    private Pane clownArea; // Панель для отображения клоунов
+    private ListView<Label> clownListView; // Для отображения клоунов
+    private ComboBox<String> worldSelector; // ComboBox для выбора мира
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage pealava) {
-        BorderPane root = new BorderPane();
-        Image backgroundImg = new Image("wallpaper.jpg");
-        BackgroundImage background = new BackgroundImage(backgroundImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
-        root.setBackground(new Background(background));
+        gameController = new GameController(6, 6, this); // начальный баланс и миры, потом поменять логику maxOpenedClown
 
-        // Организация кнопок и информации о деньгах
-        HashMap<Integer, WorldLevel> worlds = new HashMap<>(); // Здесь должна быть логика инициализации миров
-        gameController = new GameController(6, worlds, 6); // начальный баланс и миры, потом поменять логику maxOpenedClown
+        BorderPane root = new BorderPane();
+        setupBackground(root);
+
+        clownArea = new Pane();
+        clownArea.setPrefSize(800, 400);
+
+        // пока работа с клоунами
+        clownListView = new ListView<>();
+        clownListView.setPrefSize(200, 400); // Установим предпочтительный размер
+
+        // Добавляем ListView в интерфейс
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(clownListView);
+
+        worldSelector = new ComboBox<>();
+        worldSelector.setItems(FXCollections.observableArrayList(getWorldNames())); // Заполнение ComboBox
+        worldSelector.valueProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                int selectedWorld = Integer.parseInt(newVal.split(" ")[1]); // "World 1" -> 1
+                gameController.switchWorld(selectedWorld);
+                updateClownDisplay();
+            }
+        });
+
+//        // Организация кнопок и информации о деньгах
+//        HashMap<Integer, WorldLevel> worlds = new HashMap<>(); // Здесь должна быть логика инициализации миров
+//        worlds.put(1, new WorldLevel(1, 1, "wallpaper.jpg"));
+//        gameController.setWorlds(worlds);
+//        gameController.setCurrentWorld(1);  // Начинаем с первого мира
+
         Button shopButton = createButton("shopButton.jpg");
         shopButton.setOnAction(event -> {
             System.out.println("Shop button was clicked");
             ShopWindow shopWindow = new ShopWindow(gameController, getAvailableClowns());
             shopWindow.showAndWait();
+            updateClownDisplay();
         });
 
         // Настройка списка миров
@@ -56,7 +85,11 @@ public class GameGUI extends Application {
         // Установка информации о деньгах и кнопки мира в правом верхнем углу
         setupMoneyDisplay(6);  // Начальное количество денег
         Button worldSwitchButton = createButton("worldButton.jpg");
-        worldSwitchButton.setOnAction(event -> toggleWorldList());
+        worldSwitchButton.setOnAction(event -> {
+            if (!worldSelector.getItems().isEmpty()) {
+                worldSelector.show(); // Показать выпадающий список для выбора мира
+            }
+        });
 
         HBox rightBox = new HBox(moneyLabel, worldSwitchButton);
         rightBox.setSpacing(10);
@@ -75,7 +108,16 @@ public class GameGUI extends Application {
         Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
         pealava.setScene(scene);
         pealava.setTitle("Breeding Clowns Game");
+        pealava.setOnCloseRequest(event -> System.exit(0)); // чтобы игра точно закрывалась при закрытии окна
         pealava.show();
+
+        updateClownDisplay(); // Показать клоунов
+    }
+
+    private void setupBackground(BorderPane root) {
+        Image backgroundImg = new Image("wallpaper.jpg");
+        BackgroundImage background = new BackgroundImage(backgroundImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        root.setBackground(new Background(background));
     }
 
     private Button createButton(String imagePath) {
@@ -108,9 +150,10 @@ public class GameGUI extends Application {
         worldList.setVisible(false); // Скрыть список миров при старте
 
         // Пример добавления миров
-        addWorldToPanel("World 1", "worldButton.jpg");
-        addWorldToPanel("World 2", "worldButton.jpg");
-        addWorldToPanel("World 3", "worldButton.jpg");
+        worldList.getChildren().clear();
+        for (int i = 1; i <= gameController.getWorlds().size(); i++) {
+            addWorldToPanel("World " + i, "worldButton" + ".jpg");
+        }
 
         worldList.setLayoutY(100); // Позиционирование списка миров под кнопкой переключения миров
         worldList.setAlignment(Pos.CENTER);
@@ -129,9 +172,6 @@ public class GameGUI extends Application {
         worldList.getChildren().add(worldEntry);
     }
 
-    private void toggleWorldList() {
-        worldList.setVisible(!worldList.isVisible());
-    }
     private List<ClownsClass> getAvailableClowns() {
         // Логика для получения списка доступных клоунов
         return new ArrayList<>(Arrays.asList(
@@ -143,4 +183,45 @@ public class GameGUI extends Application {
                 new ClownsClass("clown6", 6, "clown6.png")
         ));
     }
+
+
+    public void updateClownDisplay() {
+        clownArea.getChildren().clear();
+        for (ClownsClass clown : gameController.getCurrentClowns()) {
+            ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+            view.setOnMouseClicked(e -> {
+                gameController.slapClown(clown);
+                updateMoneyDisplay();
+            });
+            clownArea.getChildren().add(view);
+        }
+    }
+
+    public void updateMoneyDisplay() {
+        moneyLabel.setText("Money: " + gameController.getMoney() + " tears");
+    }
+
+
+    public void showAlert(String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Notification");
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private List<String> getWorldNames() {
+        List<String> names = new ArrayList<>();
+        for (int i = 0; i < gameController.getWorlds().size(); i++) {
+            if (gameController.getOpenedWorldsList()[i]) {
+                names.add("World " + (i + 1));
+            }
+        }
+        return names;
+    }
+
+    public void updateWorldsDisplay() {
+        worldSelector.setItems(FXCollections.observableArrayList(getWorldNames())); // Обновление списка в ComboBox
+    }
+
 }

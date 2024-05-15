@@ -18,14 +18,18 @@ public class WorldLevel {
     private Timer timer;
     // muutuja, mida kasutame karpi loomisel, et igal karpil oli oma unikaalne indeks
     private int boxCounter = 0;
+    private String backgroundImage;
+    private HashMap<Integer, ClownsClass> clowns;
 
     // konstruktor
-    public WorldLevel(int level, int minClownLevel) {
+    public WorldLevel(int level, int minClownLevel, String backgroundImage) {
         this.level = level;
         this.minClownLevel = minClownLevel;
         this.maxClownLevel = minClownLevel + 5;
         this.clownIndex = new HashMap<>();
         this.timer = new Timer();
+        this.backgroundImage = backgroundImage;
+        this.clowns = new HashMap<>();
     }
 
     // getterid
@@ -39,6 +43,14 @@ public class WorldLevel {
 
     public HashMap<Integer, ClownsClass> getClownIndex() {
         return clownIndex;
+    }
+
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public HashMap<Integer, ClownsClass> getClowns() {
+        return clowns;
     }
 
     /**
