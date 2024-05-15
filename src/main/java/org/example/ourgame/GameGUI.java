@@ -103,6 +103,7 @@ public class GameGUI extends Application {
 
         root.setTop(topBar);
         root.getChildren().add(worldList);  // Добавляем список миров в корневой контейнер
+        root.setCenter(clownArea);
 
         setupGalleryButton(root);
 
@@ -113,6 +114,7 @@ public class GameGUI extends Application {
         pealava.show();
 
         updateClownDisplay(); // Показать клоунов
+        clownArea.toFront();
 
         // Запускаем туториал после полной загрузки интерфейса
         Platform.runLater(this::startGameTutorial);

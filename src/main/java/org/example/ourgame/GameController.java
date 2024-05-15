@@ -79,11 +79,9 @@ public class GameController {
         double cost = Math.pow(clownLevel, 3) + 5;
         if (cost <= moneyInWallet && currentWorld != null) {
             moneyInWallet -= cost;
-            int newMaxLevel = World.addClown(clownLevel, currentWorld.getClownIndex(), clownInfoMap, maxOpenedClown);
-            maxOpenedClown = Math.max(maxOpenedClown, newMaxLevel);
-            // После добавления клоуна обновляем отображение
-            gameGUI.updateClownDisplay();
-            gameGUI.updateMoneyDisplay();
+            maxOpenedClown = World.addClown(clownLevel, currentWorld.getClownIndex(), clownInfoMap, maxOpenedClown);
+            gameGUI.updateClownDisplay();  // Обновляем GUI для отображения нового клоуна
+            gameGUI.updateMoneyDisplay();  // Обновляем отображение денег
         } else {
             LOGGER.warning("Failed to buy clown: Insufficient funds or no current world.");
         }

@@ -17,16 +17,15 @@ public class World {
     private static int clownCounter = 0;
     //klouni lisamise meetod
     public static int addClown(int level, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, String[]> levelInfoMap, int maxOpenedClown) {
-        ClownsClass clown = new ClownsClass(levelInfoMap.get(level)[0], level, "clown1.png");
-        clownIndex.put(clownCounter++, clown);
-        System.out.println("Palju õnne! Sul sündis uus kloun " + clown.getName() + "! Võta tema kasvutust tõsiselt!");
-
-        //maksimaalse võimalikku koluni taseme muutuja
-        if (level > maxOpenedClown) {
-            maxOpenedClown = level;
-            //BSystem.out.println(maxOpenedClown + " kloun max lvl");
+        String[] clownData = levelInfoMap.get(level);
+        if (clownData != null) {
+            ClownsClass clown = new ClownsClass(clownData[0], level, "clown" + level + ".png");
+            clownIndex.put(clownCounter++, clown);
+            System.out.println("Palju õnne! Sul sündis uus kloun " + clown.getName() + "! Võta tema kasvutust tõsiselt!");
+        } else {
+            System.out.println("No clown data available for level " + level);
         }
-        return maxOpenedClown;
+        return Math.max(level, maxOpenedClown);
     }
     //klouni kustutamise meetod. on vaja klouni aretuseks
     public static void deleteClowns (int clownIndeks, HashMap<Integer, ClownsClass> clownsClassHashMap) {
