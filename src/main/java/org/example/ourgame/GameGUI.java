@@ -33,6 +33,7 @@ public class GameGUI extends Application {
     private ComboBox<String> worldSelector; // ComboBox для выбора мира
     private Map<Integer, ClownDisplay> clownDisplays = new HashMap<>();
 
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -43,6 +44,7 @@ public class GameGUI extends Application {
 
         BorderPane root = new BorderPane();
         setupBackground(root);
+        setupGalleryButton(root);
 
         clownArea = new Pane();
         clownArea.setPrefSize(800, 400);
@@ -150,7 +152,11 @@ public class GameGUI extends Application {
 
     private void setupGalleryButton(BorderPane root) {
         Button galleryButton = createButton("Gallery.png");
-        galleryButton.setOnAction(event -> System.out.println("Gallery button was clicked"));
+        galleryButton.setOnAction(event -> {
+            GalleryWindow galleryWindow = new GalleryWindow(gameController);
+            galleryWindow.show();
+        });
+
         StackPane alignBottomRight = new StackPane(galleryButton);
         alignBottomRight.setAlignment(Pos.BOTTOM_RIGHT);
         alignBottomRight.setPadding(new Insets(10));

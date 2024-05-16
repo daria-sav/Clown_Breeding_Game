@@ -19,6 +19,9 @@ public class GameController {
     private boolean[] openedWorldsList;
     private static final Logger LOGGER = Logger.getLogger(GameController.class.getName());
     private static int clownCounter = 0;
+    public int getCurrentWorldId() {
+        return currentWorldId;
+    }
 
     public boolean isWorldOpen(int worldLevel) {
         return worldLevel <= maxOpenedClown / 6 + 1; // Your logic for determining if a world is open
@@ -250,6 +253,40 @@ public class GameController {
         } catch (IOException | ClassNotFoundException e) {
             LOGGER.log(Level.SEVERE, "Error loading game: ", e);
         }
+    }
+
+    public HashMap<Integer, String[]> readFileClowns(String fileName) {
+        HashMap<Integer, String[]> clowns = new HashMap<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader("textFiles" + File.separator + fileName))) {
+            String line;
+            int currentWorld = 1; // Start with world 1
+            while ((line = br.readLine()) != null) {
+                line = line.trim();
+                if (line.startsWith("//word")) {
+                    currentWorld = Integer.parseInt(line.substring(6).trim()); // Update current world
+                    continue; // Skip to the next line
+                }
+                if (!line.isEmpty() && !line.startsWith("//")) {
+                    String[] parts = line.split(";");
+                    if (parts.length == 3) {
+                        String[] values = {parts[0].trim(), "world" + currentWorld + File.separator + parts[2].trim()};
+                        try {
+                            int key = Integer.parseInt(parts[1].trim());
+                            clowns.put(key, values);
+                        } catch (NumberFormatException e) {
+                            System.err.println("Invalid number format: " + parts[1].trim());
+                        }
+                    } else {
+                        System.err.println("Invalid line format: " + line);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return clowns;
     }
 
 }
