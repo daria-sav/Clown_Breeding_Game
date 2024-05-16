@@ -123,6 +123,17 @@ public class GameController {
         return availableClowns;
     }
 
+    public List<ClownsClass> getAllOpenedClowns() {
+        List<ClownsClass> allOpenedClowns = new ArrayList<>();
+        for (int level = 1; level <= maxOpenedClown; level++) {
+            if (clownInfoMap.containsKey(level)) {
+                String[] clownData = clownInfoMap.get(level);
+                allOpenedClowns.add(new ClownsClass(clownData[0], level, clownData[1]));
+            }
+        }
+        return allOpenedClowns;
+    }
+
     public void buyClown(int clownLevel) {
         double cost = Math.pow(clownLevel, 3) + 5;
         if (cost <= moneyInWallet && currentWorld != null) {

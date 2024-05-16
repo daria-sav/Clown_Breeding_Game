@@ -7,13 +7,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.util.HashMap;
+import java.util.List;
 
 public class GalleryWindow extends Stage {
 
@@ -29,9 +26,11 @@ public class GalleryWindow extends Stage {
         grid.setHgap(10);
         grid.setVgap(10);
 
+        List<ClownsClass> clowns = gameController.getAllOpenedClowns();
         int columnIndex = 0;
         int rowIndex = 0;
-        for (ClownsClass clown : gameController.getCurrentClowns()) {
+
+        for (ClownsClass clown : clowns) {
             StackPane stackPane = createClownEntry(clown);
             grid.add(stackPane, columnIndex, rowIndex);
 

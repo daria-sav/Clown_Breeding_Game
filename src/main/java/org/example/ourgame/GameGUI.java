@@ -15,6 +15,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -45,7 +46,6 @@ public class GameGUI extends Application {
 
         BorderPane root = new BorderPane();
         setupBackground(root);
-        setupGalleryButton(root);
 
         clownArea = new Pane();
         clownArea.setPrefSize(800, 400);
@@ -67,12 +67,6 @@ public class GameGUI extends Application {
                 updateClownDisplay();
             }
         });
-
-//        // Организация кнопок и информации о деньгах
-//        HashMap<Integer, WorldLevel> worlds = new HashMap<>(); // Здесь должна быть логика инициализации миров
-//        worlds.put(1, new WorldLevel(1, 1, "wallpaper.jpg"));
-//        gameController.setWorlds(worlds);
-//        gameController.setCurrentWorld(1);  // Начинаем с первого мира
 
         Button shopButton = createButton("Shop.png");
         shopButton.setOnAction(event -> {
@@ -158,6 +152,7 @@ public class GameGUI extends Application {
         Button galleryButton = createButton("Gallery.png");
         galleryButton.setOnAction(event -> {
             GalleryWindow galleryWindow = new GalleryWindow(gameController);
+            galleryWindow.initModality(Modality.APPLICATION_MODAL); // Установка модальности окна
             galleryWindow.show();
         });
 
@@ -361,6 +356,5 @@ public class GameGUI extends Application {
         showAlert("Explore", "Nüüd võid vabalt mängu ise uurida.\n" +
                 "Proovi aretada kloune, et avada uusi tasemeid ja maailmu!");
     }
-
 
 }
