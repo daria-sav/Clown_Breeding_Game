@@ -13,7 +13,6 @@ public class WorldLevel {
     private int minClownLevel; // minimaalne kluni tase, mis kuulub selle maailmale
     private int maxClownLevel; // maksimaalne klouni tase, mis kuulun selle maailmale
     private HashMap<Integer, BoxesClass> boxes = new HashMap<Integer, BoxesClass>(); // maailma karbid
-    private HashMap<Integer, ClownsClass> clownIndex; // maailma klounid
     private ArrayList<Bonuses> bonuses = new ArrayList<Bonuses>(); // maailma boonused
     private Timer timer;
     // muutuja, mida kasutame karpi loomisel, et igal karpil oli oma unikaalne indeks
@@ -26,7 +25,6 @@ public class WorldLevel {
         this.level = level;
         this.minClownLevel = minClownLevel;
         this.maxClownLevel = minClownLevel + 5;
-        this.clownIndex = new HashMap<>();
         this.timer = new Timer();
         this.backgroundImage = backgroundImage;
         this.clowns = new HashMap<>();
@@ -39,10 +37,6 @@ public class WorldLevel {
 
     public HashMap<Integer, BoxesClass> getBoxes() {
         return boxes;
-    }
-
-    public HashMap<Integer, ClownsClass> getClownIndex() {
-        return clownIndex;
     }
 
     public String getBackgroundImage() {

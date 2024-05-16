@@ -21,11 +21,12 @@ public class World {
         if (clownData != null) {
             ClownsClass clown = new ClownsClass(clownData[0], level, "clown" + level + ".png");
             clownIndex.put(clownCounter++, clown);
-            System.out.println("Palju õnne! Sul sündis uus kloun " + clown.getName() + "! Võta tema kasvutust tõsiselt!");
+            System.out.println("Adding clown: " + clown.getName() + ", Level: " + level);
+            return Math.max(level, maxOpenedClown);
         } else {
             System.out.println("No clown data available for level " + level);
+            return maxOpenedClown;
         }
-        return Math.max(level, maxOpenedClown);
     }
     //klouni kustutamise meetod. on vaja klouni aretuseks
     public static void deleteClowns (int clownIndeks, HashMap<Integer, ClownsClass> clownsClassHashMap) {
@@ -56,7 +57,7 @@ public class World {
                 } else {
                     //kui kloun l2heb paremasse maalima
                     if(ourWorldLevel < 6) {
-                        HashMap<Integer, ClownsClass> newClownIndex = ourWorlds.get(ourWorldLevel + 1).getClownIndex();
+                        HashMap<Integer, ClownsClass> newClownIndex = ourWorlds.get(ourWorldLevel + 1).getClowns();
                         addClown(newLevel, newClownIndex, levelInfoMap, maxOpenedClown);
                         //ei ole vaja informeerida kasutajat iga kord
                         if(openedWorldsList[ourWorldLevel] != true) {

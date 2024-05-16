@@ -2,7 +2,7 @@
 //HashMap<Integer(lvl), String(namePicture[0](klowns name), namePicture[1](picture link))>
 
 //word 1
-Peeter Paanika;1;name
+Peeter Paanika;1;clown1.png
 Kertu Sambuka;2;name
 Bim Bam-Boom;3;name
 Pipi Pikksukk;4;name

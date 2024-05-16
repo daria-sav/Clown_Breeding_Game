@@ -103,6 +103,8 @@ public class GameGUI extends Application {
 
         root.setTop(topBar);
         root.getChildren().add(worldList);  // Добавляем список миров в корневой контейнер
+        clownArea.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
+
         root.setCenter(clownArea);
 
         setupGalleryButton(root);
@@ -118,6 +120,7 @@ public class GameGUI extends Application {
 
         // Запускаем туториал после полной загрузки интерфейса
         Platform.runLater(this::startGameTutorial);
+        System.out.println("Clowns to display: " + gameController.getCurrentClowns().size());
     }
 
     private void setupBackground(BorderPane root) {
@@ -193,7 +196,9 @@ public class GameGUI extends Application {
 
     public void updateClownDisplay() {
         clownArea.getChildren().clear();
-        for (ClownsClass clown : gameController.getCurrentClowns()) {
+        List<ClownsClass> clowns = gameController.getCurrentClowns();
+        System.out.println("Displaying " + clowns.size() + " clowns.");
+        for (ClownsClass clown : clowns) {
             ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
             view.setOnMouseClicked(e -> {
                 gameController.slapClown(clown);

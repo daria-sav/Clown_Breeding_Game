@@ -15,6 +15,7 @@ public class GameController {
     private GameGUI gameGUI; // Ссылка на GUI для обратных вызовов
     private boolean[] openedWorldsList;
     private static final Logger LOGGER = Logger.getLogger(GameController.class.getName());
+    private static int clownCounter = 0;
 
 
     public GameController(int initialMoney, int initialMaxClown, GameGUI gameGUI) {
@@ -45,6 +46,7 @@ public class GameController {
 
     public void setCurrentWorld(int worldLevel) {
         this.currentWorld = this.worlds.get(worldLevel);
+        System.out.println("Set current world to " + worldLevel + " with " + (currentWorld != null ? currentWorld.getClowns().size() : "null") + " clowns");
     }
 
     public WorldLevel getCurrentWorld() {
@@ -68,7 +70,14 @@ public class GameController {
     }
 
     public List<ClownsClass> getCurrentClowns() {
-        return new ArrayList<>(worlds.get(currentWorldId).getClowns().values());
+        if (currentWorld != null && worlds.containsKey(currentWorldId)) {
+            List<ClownsClass> clowns = new ArrayList<>(worlds.get(currentWorldId).getClowns().values());
+            System.out.println("Current world has " + clowns.size() + " clowns");
+            return clowns;
+        } else {
+            System.out.println("No current world or world is not initialized");
+            return new ArrayList<>();
+        }
     }
 
     public List<ClownsClass> getAvailableClowns() {
@@ -79,13 +88,28 @@ public class GameController {
         double cost = Math.pow(clownLevel, 3) + 5;
         if (cost <= moneyInWallet && currentWorld != null) {
             moneyInWallet -= cost;
-            maxOpenedClown = World.addClown(clownLevel, currentWorld.getClownIndex(), clownInfoMap, maxOpenedClown);
+            maxOpenedClown = addClown(clownLevel, currentWorld.getClowns(), clownInfoMap, maxOpenedClown);
+            setCurrentWorld(currentWorldId);  // Переустанавливаем currentWorld
             gameGUI.updateClownDisplay();  // Обновляем GUI для отображения нового клоуна
             gameGUI.updateMoneyDisplay();  // Обновляем отображение денег
         } else {
             LOGGER.warning("Failed to buy clown: Insufficient funds or no current world.");
         }
     }
+
+    public static int addClown(int level, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, String[]> levelInfoMap, int maxOpenedClown) {
+        String[] clownData = levelInfoMap.get(level);
+        if (clownData != null) {
+            ClownsClass clown = new ClownsClass(clownData[0], level, "clown" + level + ".png");
+            clownIndex.put(clownCounter++, clown);
+            System.out.println("Adding clown: " + clown.getName() + ", Level: " + level);
+            return Math.max(level, maxOpenedClown);
+        } else {
+            System.out.println("No clown data available for level " + level);
+            return maxOpenedClown;
+        }
+    }
+
 
 
     public void slapClown(ClownsClass clown) {
@@ -99,6 +123,7 @@ public class GameController {
     public void switchWorld(int worldLevel) {
         setCurrentWorld(worldLevel);
         openedWorldsList[worldLevel - 1] = true;  // Отмечаем мир как открытый
+        System.out.println("Switched to world " + worldLevel);
         gameGUI.updateClownDisplay();
         gameGUI.updateWorldsDisplay(); // Обновляем отображение списка миров
     }
