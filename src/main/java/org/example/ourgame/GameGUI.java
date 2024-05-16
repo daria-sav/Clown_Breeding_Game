@@ -20,6 +20,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameGUI extends Application {
 
@@ -136,8 +137,11 @@ public class GameGUI extends Application {
 
     private Button createButton(String imagePath) {
         Button button = new Button();
-        button.setStyle("-fx-background-image: url('/general/" + imagePath + "'); -fx-background-size: cover;");
-        button.setPrefSize(100, 100);
+        ImageView imageView = new ImageView(new Image(getClass().getResourceAsStream("/general/" + imagePath)));
+        imageView.setFitWidth(100);
+        imageView.setFitHeight(100);
+        button.setGraphic(imageView);
+        button.setStyle("-fx-background-color: transparent; -fx-padding: 10;");
         return button;
     }
 
@@ -193,73 +197,92 @@ public class GameGUI extends Application {
 
 
     public void updateClownDisplay() {
-        clownArea.getChildren().clear();  // Очищаем панель перед добавлением новых элементов
         List<ClownsClass> clowns = gameController.getCurrentClowns();
+        Set<Integer> currentDisplayedIds = new HashSet<>(clownDisplays.keySet());
+        Set<Integer> newClownIds = clowns.stream().map(ClownsClass::getId).collect(Collectors.toSet());
+
+        // Удаление ImageView для клоунов, которые были удалены из модели
+        currentDisplayedIds.removeAll(newClownIds);
+        for (Integer id : currentDisplayedIds) {
+            ImageView toRemove = clownDisplays.get(id).getView();
+            clownArea.getChildren().remove(toRemove);
+            clownDisplays.remove(id);
+        }
+
         Random rand = new Random();
 
         for (ClownsClass clown : clowns) {
-            ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
-            int x = rand.nextInt((int) clownArea.getPrefWidth() - 100);
-            int y = rand.nextInt((int) clownArea.getPrefHeight() - 100);
-            view.setX(x);
-            view.setY(y);
+            ClownDisplay display = clownDisplays.get(clown.getId());
+            if (display == null) {
+                // Создаем новый ImageView для новых клоунов
+                ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+                int x = rand.nextInt((int) clownArea.getPrefWidth() - 100);
+                int y = rand.nextInt((int) clownArea.getPrefHeight() - 100);
+                view.setX(x);
+                view.setY(y);
 
-            TranslateTransition transition = new TranslateTransition(Duration.seconds(1), view);
-            transition.setByX(rand.nextInt(21) - 10);
-            transition.setByY(rand.nextInt(21) - 10);
-            transition.setAutoReverse(true);
-            transition.setCycleCount(TranslateTransition.INDEFINITE);
+                TranslateTransition transition = new TranslateTransition(Duration.seconds(1), view);
+                transition.setByX(rand.nextInt(21) - 10);
+                transition.setByY(rand.nextInt(21) - 10);
+                transition.setAutoReverse(true);
+                transition.setCycleCount(TranslateTransition.INDEFINITE);
 
-            view.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2) {
+                addDragHandlers(view, clown);
+                transition.play();
+                clownArea.getChildren().add(view);
+                display = new ClownDisplay(view, transition);
+                clownDisplays.put(clown.getId(), display);
+            }
+        }
+    }
+
+
+
+    private void addDragHandlers(ImageView view, ClownsClass clown) {
+        if (!view.getProperties().containsKey("handlersAdded")) {
+            final Delta dragDelta = new Delta();
+            final boolean[] isDragging = new boolean[1];
+
+            view.setOnMousePressed(event -> {
+                ClownDisplay display = clownDisplays.get(clown.getId());
+                if (display != null) {
+                    display.getTransition().pause();
+                }
+                dragDelta.x = view.getX() - event.getSceneX();
+                dragDelta.y = view.getY() - event.getSceneY();
+                view.setCursor(Cursor.MOVE);
+                isDragging[0] = false;
+            });
+
+            view.setOnMouseDragged(event -> {
+                view.setX(event.getSceneX() + dragDelta.x);
+                view.setY(event.getSceneY() + dragDelta.y);
+                isDragging[0] = true;
+            });
+
+            view.setOnMouseReleased(event -> {
+                if (isDragging[0]) {
+                    checkForBreeding(view, clown);
+                }
+                view.setCursor(Cursor.HAND);
+                ClownDisplay display = clownDisplays.get(clown.getId());
+                if (display != null) {
+                    display.getTransition().play();
+                }
+                isDragging[0] = false;
+            });
+
+            view.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !isDragging[0]) {
                     gameController.slapClown(clown);
                     updateMoneyDisplay();
                 }
             });
 
-            addDragHandlers(view, clown);
-            transition.play();
-            clownArea.getChildren().add(view);
-            ClownDisplay display = new ClownDisplay(view, transition);
-            clownDisplays.put(clown.getId(), display);
+            view.getProperties().put("handlersAdded", true);  // Установка флага, что обработчики установлены
         }
     }
 
-
-    private void addDragHandlers(ImageView view, ClownsClass clown) {
-        final Delta dragDelta = new Delta();
-        final boolean[] isDragging = new boolean[1];
-
-        view.setOnMousePressed(event -> {
-            clownDisplays.get(clown.getId()).getTransition().pause();
-            dragDelta.x = view.getX() - event.getSceneX();
-            dragDelta.y = view.getY() - event.getSceneY();
-            view.setCursor(Cursor.MOVE);
-            isDragging[0] = false;
-        });
-
-        view.setOnMouseDragged(event -> {
-            view.setX(event.getSceneX() + dragDelta.x);
-            view.setY(event.getSceneY() + dragDelta.y);
-            isDragging[0] = true;
-        });
-
-        view.setOnMouseReleased(event -> {
-            if (isDragging[0]) {
-                checkForBreeding(view, clown);
-            }
-            view.setCursor(Cursor.HAND);
-            clownDisplays.get(clown.getId()).getTransition().play();
-            isDragging[0] = false;
-        });
-
-        view.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && !isDragging[0]) {
-                gameController.slapClown(clown);
-                updateMoneyDisplay();
-            }
-        });
-    }
 
     private void checkForBreeding(ImageView draggedClownView, ClownsClass draggedClown) {
         System.out.println(1);

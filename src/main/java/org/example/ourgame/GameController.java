@@ -113,16 +113,13 @@ public class GameController {
 
     public List<ClownsClass> getAvailableClowns() {
         List<ClownsClass> availableClowns = new ArrayList<>();
-        int maxLevelAvailable = Math.max(1, maxOpenedClown - 3);  // Минимум 1 уровень
-
-        // Фильтрация доступных клоунов по максимально доступному уровню и текущему миру
-        for (int level = 1; level <= maxLevelAvailable; level++) {
+        // Для каждого уровня, который открыт и не выше максимально открытого
+        for (int level = 1; level <= maxOpenedClown; level++) {
             if (clownInfoMap.containsKey(level)) {
                 String[] clownData = clownInfoMap.get(level);
                 availableClowns.add(new ClownsClass(clownData[0], level, clownData[1]));
             }
         }
-
         return availableClowns;
     }
 
@@ -196,26 +193,23 @@ public class GameController {
             System.out.println("Clowns removed from current world, breeding new clown at level: " + newLevel);
 
             if ((newLevel - 1) % 6 != 0) {
-                addClown(newLevel, currentWorld.getClowns(), clownInfoMap, maxOpenedClown);
+                maxOpenedClown = addClown(newLevel, currentWorld.getClowns(), clownInfoMap, maxOpenedClown);
             } else {
                 // Обработка перехода клоуна в новый мир
                 int nextWorldId = currentWorldId + 1;
                 if (currentWorldId < worlds.size()) {
                     HashMap<Integer, ClownsClass> nextWorldClowns = worlds.get(nextWorldId).getClowns();
-                    addClown(newLevel, nextWorldClowns, clownInfoMap, maxOpenedClown);
+                    maxOpenedClown = addClown(newLevel, nextWorldClowns, clownInfoMap, maxOpenedClown);
                     openedWorldsList[nextWorldId - 1] = true;
                 }
             }
 
-            // Вызовите метод обновления интерфейса для удаления старых изображений
             gameGUI.updateClownDisplay();
+            gameGUI.updateWorldsDisplay();
         } else {
             System.out.println("Clowns have different levels, cannot breed.");
         }
     }
-
-
-
 
     public ClownsClass getClownById(int id) {
         if (currentWorld != null) {

@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class ShopWindow extends Stage {
-
     private GameController gameController;
 
     public ShopWindow(GameController gameController) {
@@ -37,7 +36,9 @@ public class ShopWindow extends Stage {
         clownsBox.setAlignment(Pos.CENTER);
         clownsBox.setPadding(new Insets(20));
 
-        for (ClownsClass clown : gameController.getAvailableClowns()) {
+        // Обновляем список клоунов перед показом окна
+        List<ClownsClass> availableClowns = gameController.getAvailableClowns();
+        for (ClownsClass clown : availableClowns) {
             HBox clownEntry = createClownEntry(clown);
             clownsBox.getChildren().add(clownEntry);
         }
@@ -63,5 +64,4 @@ public class ShopWindow extends Stage {
         clownEntry.setAlignment(Pos.CENTER);
         return clownEntry;
     }
-
 }
