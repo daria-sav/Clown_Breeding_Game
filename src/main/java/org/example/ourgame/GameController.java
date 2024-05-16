@@ -1,5 +1,8 @@
 package org.example.ourgame;
 
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
+
 import java.io.*;
 import java.util.*;
 import java.util.logging.Level;
@@ -16,6 +19,31 @@ public class GameController {
     private boolean[] openedWorldsList;
     private static final Logger LOGGER = Logger.getLogger(GameController.class.getName());
     private static int clownCounter = 0;
+
+    public boolean isWorldOpen(int worldLevel) {
+        return worldLevel <= maxOpenedClown / 6 + 1; // Your logic for determining if a world is open
+    }
+
+    public void switchWorld(int worldLevel) {
+        if (isWorldOpen(worldLevel)) {
+            currentWorldId = worldLevel;
+            setCurrentWorld(worldLevel);
+            gameGUI.updateClownDisplay();
+            gameGUI.updateWorldsDisplay();
+        } else {
+            showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
+        }
+    }
+
+    public void showAlert(String header, String content) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Mängu teavitus");
+            alert.setHeaderText(header);
+            alert.setContentText(content);
+            alert.showAndWait();
+        });
+    }
 
 
     public GameController(int initialMoney, int initialMaxClown, GameGUI gameGUI) {
@@ -120,13 +148,13 @@ public class GameController {
         gameGUI.showAlert("Clown Slapped", "You earned " + moneyEarned + " tears");
     }
 
-    public void switchWorld(int worldLevel) {
+    /*public void switchWorld(int worldLevel) {
         setCurrentWorld(worldLevel);
         openedWorldsList[worldLevel - 1] = true;  // Отмечаем мир как открытый
         System.out.println("Switched to world " + worldLevel);
         gameGUI.updateClownDisplay();
         gameGUI.updateWorldsDisplay(); // Обновляем отображение списка миров
-    }
+    }*/
 
 
     public void breedClowns(int clown1Id, int clown2Id) {

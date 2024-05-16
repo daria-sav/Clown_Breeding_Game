@@ -87,9 +87,10 @@ public class GameGUI extends Application {
         setupMoneyDisplay(6);  // Начальное количество денег
         Button worldSwitchButton = createButton("World.png");
         worldSwitchButton.setOnAction(event -> {
-            if (!worldSelector.getItems().isEmpty()) {
-                worldSelector.show(); // Показать выпадающий список для выбора мира
-            }
+            WorldSelectionWindow worldSelectionWindow = new WorldSelectionWindow();
+            worldSelectionWindow.show(gameController);
+            updateClownDisplay();
+            updateWorldsDisplay();
         });
 
         HBox rightBox = new HBox(moneyLabel, worldSwitchButton);
@@ -231,7 +232,7 @@ public class GameGUI extends Application {
         worldSelector.setItems(FXCollections.observableArrayList(getWorldNames())); // Обновление списка в ComboBox
     }
 
-    public void startGameTutorial() {
+    /*public void startGameTutorial() {
         // Предоставляем первого клоуна
         gameController.buyClown(1); // Покупаем первого клоуна уровня 1
         showAlert("Welcome!", "Welcome to the Clown Breeding Game!\n" +
@@ -248,6 +249,25 @@ public class GameGUI extends Application {
         // Предложение продолжить самостоятельное исследование игры
         showAlert("Explore", "Now, feel free to explore the game on your own.\n" +
                 "Try to breed clowns to unlock new levels and worlds!");
+    }*/
+    public void startGameTutorial() {
+        // Anname mängijale esimese klouni
+        gameController.buyClown(1); // Ostame esimese taseme klouni
+        showAlert("Welcome!", "Tere tulemast klounide aretamise mängu!\n" +
+                "Oled saanud oma esimese klouni alustamiseks.\n" +
+                "Vaata oma uut klouni klouni kuvamise alal!");
+
+        // Edasised juhised mängijale
+        showAlert("Tutorial", "See on lühike õpetus alustamiseks:\n" +
+                "- Kasuta 'Shop' nuppu uute klounide ostmiseks.\n" +
+                "- Klõpsa klounidele klounide alal, et neid lüüa ja pisaraid teenida.\n" +
+                "- Kasuta 'World' nuppu, et liikuda erinevate maailmade vahel, kui need avad.\n" +
+                "- Aretusklounid, valides kaks sama taseme klouni, kui sul on neid rohkem kui üks.");
+
+        // Ettepanek jätkata mängu iseseisvat uurimist
+        showAlert("Explore", "Nüüd võid vabalt mängu ise uurida.\n" +
+                "Proovi aretada kloune, et avada uusi tasemeid ja maailmu!");
     }
+
 
 }

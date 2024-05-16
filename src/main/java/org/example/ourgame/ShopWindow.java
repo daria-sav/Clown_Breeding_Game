@@ -31,6 +31,29 @@ public class ShopWindow extends Stage {
         clownsBox.setAlignment(Pos.CENTER);
         clownsBox.setPadding(new Insets(20));
 
+
+        for (ClownsClass clown : gameController.getAvailableClowns()) {
+            HBox clownEntry = new HBox(10);
+            clownEntry.setAlignment(Pos.CENTER);
+            ImageView clownImage = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+            double price = Math.pow(clown.getClownLevel(), 3) + 5;
+            Label label = new Label(clown.getName() + ", Level " + clown.getClownLevel() + " - Price: " + price);
+            Button buyButton = new Button("Buy");
+            buyButton.setOnAction(e -> {
+                try {
+                    gameController.buyClown(clown.getClownLevel());
+                    close(); // Закрыть окно после покупки
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            });
+            clownEntry.getChildren().addAll(clownImage, label, buyButton);
+            clownsBox.getChildren().add(clownEntry);
+        }
+
+        Scene scene = new Scene(clownsBox);
+        this.setScene(scene);
+
         /*
         старый рабочий код:
 
@@ -57,29 +80,6 @@ public class ShopWindow extends Stage {
             clownRow.getChildren().addAll(clownImage, nameAndPrice, buyButton);
             clownsBox.getChildren().add(clownRow);
         }
-
          */
-
-        for (ClownsClass clown : gameController.getAvailableClowns()) {
-            HBox clownEntry = new HBox(10);
-            clownEntry.setAlignment(Pos.CENTER);
-            ImageView clownImage = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
-            double price = Math.pow(clown.getClownLevel(), 3) + 5;
-            Label label = new Label(clown.getName() + ", Level " + clown.getClownLevel() + " - Price: " + price);
-            Button buyButton = new Button("Buy");
-            buyButton.setOnAction(e -> {
-                try {
-                    gameController.buyClown(clown.getClownLevel());
-                    close(); // Закрыть окно после покупки
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-            clownEntry.getChildren().addAll(clownImage, label, buyButton);
-            clownsBox.getChildren().add(clownEntry);
-        }
-
-        Scene scene = new Scene(clownsBox);
-        this.setScene(scene);
     }
 }
