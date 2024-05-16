@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public class GameGUI extends Application {
@@ -68,7 +67,7 @@ public class GameGUI extends Application {
 //        gameController.setWorlds(worlds);
 //        gameController.setCurrentWorld(1);  // Начинаем с первого мира
 
-        Button shopButton = createButton("shopButton.jpg");
+        Button shopButton = createButton("Shop.png");
         shopButton.setOnAction(event -> {
             System.out.println("Shop button was clicked");
             ShopWindow shopWindow = new ShopWindow(gameController, getAvailableClowns());
@@ -85,7 +84,7 @@ public class GameGUI extends Application {
 
         // Установка информации о деньгах и кнопки мира в правом верхнем углу
         setupMoneyDisplay(6);  // Начальное количество денег
-        Button worldSwitchButton = createButton("worldButton.jpg");
+        Button worldSwitchButton = createButton("World.png");
         worldSwitchButton.setOnAction(event -> {
             if (!worldSelector.getItems().isEmpty()) {
                 worldSelector.show(); // Показать выпадающий список для выбора мира
@@ -128,10 +127,11 @@ public class GameGUI extends Application {
 
     private Button createButton(String imagePath) {
         Button button = new Button();
-        button.setStyle("-fx-background-image: url('" + imagePath + "'); -fx-background-size: cover;");
+        button.setStyle("-fx-background-image: url('/general/" + imagePath + "'); -fx-background-size: cover;");
         button.setPrefSize(100, 100);
         return button;
     }
+
 
     private void setupMoneyDisplay(int initialMoney) {
         moneyLabel = new Label("Money: " + initialMoney + " tears");
@@ -142,7 +142,7 @@ public class GameGUI extends Application {
     }
 
     private void setupGalleryButton(BorderPane root) {
-        Button galleryButton = createButton("clownButton.jpg");
+        Button galleryButton = createButton("Gallery.png");
         galleryButton.setOnAction(event -> System.out.println("Gallery button was clicked"));
         StackPane alignBottomRight = new StackPane(galleryButton);
         alignBottomRight.setAlignment(Pos.BOTTOM_RIGHT);
@@ -181,12 +181,12 @@ public class GameGUI extends Application {
     private List<ClownsClass> getAvailableClowns() {
         // Логика для получения списка доступных клоунов
         return new ArrayList<>(Arrays.asList(
-                new ClownsClass("Lobzik♡", 1, "clown1.png"),
-                new ClownsClass("clown2", 2, "clown2.png"),
-                new ClownsClass("clown3", 3, "clown3.png"),
-                new ClownsClass("clown4", 4, "clown4.png"),
-                new ClownsClass("clown5", 5, "clown5.png"),
-                new ClownsClass("clown6", 6, "clown6.png")
+                new ClownsClass("Lobzik♡", 1, "world2/clown1.png"),
+                new ClownsClass("clown2", 2, "world2/clown2.png"),
+                new ClownsClass("clown3", 3, "world2/clown3.png"),
+                new ClownsClass("clown4", 4, "world2/clown4.png"),
+                new ClownsClass("clown5", 5, "world2/clown5.png"),
+                new ClownsClass("clown6", 6, "world2/clown6.png")
         ));
     }
 
@@ -194,7 +194,7 @@ public class GameGUI extends Application {
     public void updateClownDisplay() {
         clownArea.getChildren().clear();
         for (ClownsClass clown : gameController.getCurrentClowns()) {
-            ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+            ImageView view = new ImageView(new Image("/world" + gameController.getCurrentWorld() + "/" + clown.getPicture(), 100, 100, true, true));
             view.setOnMouseClicked(e -> {
                 gameController.slapClown(clown);
                 updateMoneyDisplay();
