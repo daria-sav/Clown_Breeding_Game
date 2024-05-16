@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,7 +121,7 @@ public class GameGUI extends Application {
     }
 
     private void setupBackground(BorderPane root) {
-        Image backgroundImg = new Image("wallpaper.jpg");
+        Image backgroundImg = new Image("world1" + File.separator + "background_1.png");
         BackgroundImage background = new BackgroundImage(backgroundImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         root.setBackground(new Background(background));
     }
