@@ -100,7 +100,7 @@ public class GameController {
     public static int addClown(int level, HashMap<Integer, ClownsClass> clownIndex, HashMap<Integer, String[]> levelInfoMap, int maxOpenedClown) {
         String[] clownData = levelInfoMap.get(level);
         if (clownData != null) {
-            ClownsClass clown = new ClownsClass(clownData[0], level, "clown" + level + ".png");
+            ClownsClass clown = new ClownsClass(clownData[0], level, clownData[1]);
             clownIndex.put(clownCounter++, clown);
             System.out.println("Adding clown: " + clown.getName() + ", Level: " + level);
             return Math.max(level, maxOpenedClown);

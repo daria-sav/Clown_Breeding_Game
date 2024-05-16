@@ -1,5 +1,6 @@
 package org.example.ourgame;
 
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -13,11 +14,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public class GameGUI extends Application {
 
@@ -71,7 +73,7 @@ public class GameGUI extends Application {
         Button shopButton = createButton("Shop.png");
         shopButton.setOnAction(event -> {
             System.out.println("Shop button was clicked");
-            ShopWindow shopWindow = new ShopWindow(gameController, getAvailableClowns());
+            ShopWindow shopWindow = new ShopWindow(gameController, gameController.getAvailableClowns());
             shopWindow.showAndWait();
             updateClownDisplay();
         });
@@ -104,6 +106,8 @@ public class GameGUI extends Application {
         root.setTop(topBar);
         root.getChildren().add(worldList);  // Добавляем список миров в корневой контейнер
         root.setCenter(clownArea);
+
+        clownArea.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
 
         setupGalleryButton(root);
 
@@ -179,23 +183,31 @@ public class GameGUI extends Application {
         worldList.getChildren().add(worldEntry);
     }
 
-    private List<ClownsClass> getAvailableClowns() {
-        // Логика для получения списка доступных клоунов
-        return new ArrayList<>(Arrays.asList(
-                new ClownsClass("Lobzik♡", 1, "world2/clown1.png"),
-                new ClownsClass("clown2", 2, "world2/clown2.png"),
-                new ClownsClass("clown3", 3, "world2/clown3.png"),
-                new ClownsClass("clown4", 4, "world2/clown4.png"),
-                new ClownsClass("clown5", 5, "world2/clown5.png"),
-                new ClownsClass("clown6", 6, "world2/clown6.png")
-        ));
-    }
-
 
     public void updateClownDisplay() {
         clownArea.getChildren().clear();
-        for (ClownsClass clown : gameController.getCurrentClowns()) {
-            ImageView view = new ImageView(new Image("/world" + gameController.getCurrentWorld() + "/" + clown.getPicture(), 100, 100, true, true));
+        List<ClownsClass> clowns = gameController.getCurrentClowns();
+        Random rand = new Random();
+        System.out.println("Displaying " + clowns.size() + " clowns.");
+        for (ClownsClass clown : clowns) {
+            ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+
+            // Случайное начальное положение
+            int x = rand.nextInt((int) clownArea.getPrefWidth() - 100); // Уменьшаем на ширину изображения
+            int y = rand.nextInt((int) clownArea.getPrefHeight() - 100); // Уменьшаем на высоту изображения
+            view.setX(x);
+            view.setY(y);
+
+            // Добавляем небольшое случайное движение
+            TranslateTransition transition = new TranslateTransition(Duration.seconds(1), view);
+            int moveX = rand.nextInt(21) - 10; // Движение от -10 до 10
+            int moveY = rand.nextInt(21) - 10; // Движение от -10 до 10
+            transition.setByX(moveX);
+            transition.setByY(moveY);
+            transition.setAutoReverse(true);
+            transition.setCycleCount(TranslateTransition.INDEFINITE);
+            transition.play();
+
             view.setOnMouseClicked(e -> {
                 gameController.slapClown(clown);
                 updateMoneyDisplay();
