@@ -109,7 +109,18 @@ public class GameController {
     }
 
     public List<ClownsClass> getAvailableClowns() {
-        return new ArrayList<>(worlds.get(currentWorldId).getClowns().values());
+        List<ClownsClass> availableClowns = new ArrayList<>();
+        int maxLevelAvailable = Math.max(1, maxOpenedClown - 3);  // Минимум 1 уровень
+
+        // Фильтрация доступных клоунов по максимально доступному уровню и текущему миру
+        for (int level = 1; level <= maxLevelAvailable; level++) {
+            if (clownInfoMap.containsKey(level)) {
+                String[] clownData = clownInfoMap.get(level);
+                availableClowns.add(new ClownsClass(clownData[0], level, clownData[1]));
+            }
+        }
+
+        return availableClowns;
     }
 
     public void buyClown(int clownLevel) {
@@ -138,7 +149,14 @@ public class GameController {
         }
     }
 
-
+    public static void deleteClowns (int clownIndeks, HashMap<Integer, ClownsClass> clownsClassHashMap) {
+        if (clownsClassHashMap.containsKey(clownIndeks)) {
+            clownsClassHashMap.remove(clownIndeks);
+            //System.out.println("Kloun indeksiga " + clownIndeks + " on eemaldatud!");
+        } else {
+            System.out.println("Kloun indeksiga " + clownIndeks + " ei eksisteeri((((");
+        }
+    }
 
     public void slapClown(ClownsClass clown) {
         double moneyEarned = clown.slapTheClown();
@@ -157,8 +175,52 @@ public class GameController {
     }*/
 
 
-    public void breedClowns(int clown1Id, int clown2Id) {
-        World.breeding(clown1Id, clown2Id, currentWorld.getClowns(), clownInfoMap, maxOpenedClown, worlds, currentWorld.getLevel(), openedWorldsList, gameGUI);
+    //klouni aretuse meetod
+    public void breeding(int clown1Id, int clown2Id) {
+        ClownsClass clown1 = currentWorld.getClowns().get(clown1Id);
+        ClownsClass clown2 = currentWorld.getClowns().get(clown2Id);
+
+        if (clown1 == null || clown2 == null) {
+            System.out.println("Один из клоунов не найден.");
+            return; // Выход, если один из клоунов не найден
+        }
+
+        if (clown1.getClownLevel() == clown2.getClownLevel()) {
+            int newLevel = clown1.getClownLevel() + 1;
+
+            // Удаление клоунов из текущего мира
+            currentWorld.getClowns().remove(clown1Id);
+            currentWorld.getClowns().remove(clown2Id);
+
+            // Переход клоунов в новый мир или добавление клоуна повышенного уровня
+            if ((newLevel - 1) % 6 != 0) {
+                addClown(newLevel, currentWorld.getClowns(), clownInfoMap, maxOpenedClown);
+            } else {
+                // Переход клоуна в следующий мир, если достигнут новый уровень
+                if (currentWorldId < worlds.size()) {
+                    int nextWorldId = currentWorldId + 1;
+                    HashMap<Integer, ClownsClass> nextWorldClowns = worlds.get(nextWorldId).getClowns();
+                    addClown(newLevel, nextWorldClowns, clownInfoMap, maxOpenedClown);
+                    if (!openedWorldsList[nextWorldId - 1]) {
+                        openedWorldsList[nextWorldId - 1] = true;
+                        System.out.println("Поздравляем! Вы открыли новый мир!");
+                    }
+                } else {
+                    System.out.println("Вы достигли конца игры!");
+                }
+            }
+            gameGUI.updateClownDisplay();
+        } else {
+            System.out.println("Уровни клоунов не совпадают, скрещивание невозможно.");
+        }
+    }
+
+
+    public ClownsClass getClownById(int id) {
+        if (currentWorld != null) {
+            return currentWorld.getClowns().get(id);
+        }
+        return null; // Возвращаем null, если мир не найден или в мире нет клоуна с таким ID
     }
 
     public void saveGame() {

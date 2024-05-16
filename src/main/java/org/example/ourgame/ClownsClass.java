@@ -4,11 +4,14 @@ import java.util.Random;
 
 // antud klass on klounide objektide jaoks ning nende töötlemisega
 public class ClownsClass implements Comparable<ClownsClass> {
+    private static int idCounter = 0;
+    private int id;
     private String name;
     private int clownLevel;
     private String picture;
 
     public ClownsClass(String name, int clownLevel, String picture) {
+        this.id = ++idCounter;  // Увеличиваем счётчик и присваиваем ID
         this.name = name;
         this.clownLevel = clownLevel;
         this.picture = picture;
@@ -17,6 +20,10 @@ public class ClownsClass implements Comparable<ClownsClass> {
     //getterid ja setterid
     public String getName() {
         return name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setName(String name) {

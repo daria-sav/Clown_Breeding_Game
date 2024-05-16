@@ -22,64 +22,46 @@ public class ShopWindow extends Stage {
 
     private GameController gameController;
 
-    public ShopWindow(GameController gameController, List<ClownsClass> availableClowns) {
+    public ShopWindow(GameController gameController) {
         this.gameController = gameController;
         this.initModality(Modality.APPLICATION_MODAL);
         this.setTitle("Clowns Shop");
+        VBox clownsBox = setupClownsDisplay();
 
+        Scene scene = new Scene(clownsBox);
+        this.setScene(scene);
+    }
+
+    private VBox setupClownsDisplay() {
         VBox clownsBox = new VBox(10);
         clownsBox.setAlignment(Pos.CENTER);
         clownsBox.setPadding(new Insets(20));
 
-
         for (ClownsClass clown : gameController.getAvailableClowns()) {
-            HBox clownEntry = new HBox(10);
-            clownEntry.setAlignment(Pos.CENTER);
-            ImageView clownImage = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
-            double price = Math.pow(clown.getClownLevel(), 3) + 5;
-            Label label = new Label(clown.getName() + ", Level " + clown.getClownLevel() + " - Price: " + price);
-            Button buyButton = new Button("Buy");
-            buyButton.setOnAction(e -> {
-                try {
-                    gameController.buyClown(clown.getClownLevel());
-                    close(); // Закрыть окно после покупки
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            });
-            clownEntry.getChildren().addAll(clownImage, label, buyButton);
+            HBox clownEntry = createClownEntry(clown);
             clownsBox.getChildren().add(clownEntry);
         }
 
-        Scene scene = new Scene(clownsBox);
-        this.setScene(scene);
-
-        /*
-        старый рабочий код:
-
-        for (ClownsClass clown : gameController.getAvailableClowns()) {
-            HBox clownRow = new HBox(10);
-            clownRow.setAlignment(Pos.CENTER);
-            ImageView clownImage = new ImageView(new Image(clown.getPicture()));
-            clownImage.setFitWidth(100);
-            clownImage.setFitHeight(100);
-
-            int price = (int) (Math.pow(clown.getClownLevel(), 3) + 5);
-            Text nameAndPrice = new Text(clown.getName() + " - $" + price);
-            nameAndPrice.setFont(Font.font("Arial", FontWeight.BOLD, 14));
-
-            Button buyButton = new Button("Buy");
-            buyButton.setOnAction(event -> {
-                try {
-                    buyClown(clown);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-            clownRow.getChildren().addAll(clownImage, nameAndPrice, buyButton);
-            clownsBox.getChildren().add(clownRow);
-        }
-         */
+        return clownsBox;
     }
+
+    private HBox createClownEntry(ClownsClass clown) {
+        ImageView clownImage = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+        double price = Math.pow(clown.getClownLevel(), 3) + 5;
+        Label label = new Label(clown.getName() + ", Level " + clown.getClownLevel() + " - Price: " + price);
+        Button buyButton = new Button("Buy");
+        buyButton.setOnAction(e -> {
+            try {
+                gameController.buyClown(clown.getClownLevel());
+                close(); // Закрыть окно после покупки
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+        HBox clownEntry = new HBox(10, clownImage, label, buyButton);
+        clownEntry.setAlignment(Pos.CENTER);
+        return clownEntry;
+    }
+
 }

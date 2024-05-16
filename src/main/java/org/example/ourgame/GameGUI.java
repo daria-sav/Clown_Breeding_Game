@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -17,9 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class GameGUI extends Application {
 
@@ -31,6 +31,7 @@ public class GameGUI extends Application {
     private Pane clownArea; // Панель для отображения клоунов
     private ListView<Label> clownListView; // Для отображения клоунов
     private ComboBox<String> worldSelector; // ComboBox для выбора мира
+    private Map<Integer, ClownDisplay> clownDisplays = new HashMap<>();
 
     public static void main(String[] args) {
         launch(args);
@@ -38,7 +39,7 @@ public class GameGUI extends Application {
 
     @Override
     public void start(Stage pealava) {
-        gameController = new GameController(12, 6, this); // начальный баланс и миры, потом поменять логику maxOpenedClown
+        gameController = new GameController(12, 1, this); // начальный баланс и миры, потом поменять логику maxOpenedClown
 
         BorderPane root = new BorderPane();
         setupBackground(root);
@@ -73,7 +74,7 @@ public class GameGUI extends Application {
         Button shopButton = createButton("Shop.png");
         shopButton.setOnAction(event -> {
             System.out.println("Shop button was clicked");
-            ShopWindow shopWindow = new ShopWindow(gameController, gameController.getAvailableClowns());
+            ShopWindow shopWindow = new ShopWindow(gameController);
             shopWindow.showAndWait();
             updateClownDisplay();
         });
@@ -186,36 +187,123 @@ public class GameGUI extends Application {
 
 
     public void updateClownDisplay() {
-        clownArea.getChildren().clear();
         List<ClownsClass> clowns = gameController.getCurrentClowns();
         Random rand = new Random();
-        System.out.println("Displaying " + clowns.size() + " clowns.");
+
         for (ClownsClass clown : clowns) {
-            ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
+            ClownDisplay display = clownDisplays.get(clown.getId());
+            if (display == null) {  // Если клоун не отображается, добавляем его
+                ImageView view = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
 
-            // Случайное начальное положение
-            int x = rand.nextInt((int) clownArea.getPrefWidth() - 100); // Уменьшаем на ширину изображения
-            int y = rand.nextInt((int) clownArea.getPrefHeight() - 100); // Уменьшаем на высоту изображения
-            view.setX(x);
-            view.setY(y);
+                int x = rand.nextInt((int) clownArea.getPrefWidth() - 100);
+                int y = rand.nextInt((int) clownArea.getPrefHeight() - 100);
+                view.setX(x);
+                view.setY(y);
 
-            // Добавляем небольшое случайное движение
-            TranslateTransition transition = new TranslateTransition(Duration.seconds(1), view);
-            int moveX = rand.nextInt(21) - 10; // Движение от -10 до 10
-            int moveY = rand.nextInt(21) - 10; // Движение от -10 до 10
-            transition.setByX(moveX);
-            transition.setByY(moveY);
-            transition.setAutoReverse(true);
-            transition.setCycleCount(TranslateTransition.INDEFINITE);
-            transition.play();
+                TranslateTransition transition = new TranslateTransition(Duration.seconds(1), view);
+                int moveX = rand.nextInt(21) - 10;
+                int moveY = rand.nextInt(21) - 10;
+                transition.setByX(moveX);
+                transition.setByY(moveY);
+                transition.setAutoReverse(true);
+                transition.setCycleCount(TranslateTransition.INDEFINITE);
 
-            view.setOnMouseClicked(e -> {
-                gameController.slapClown(clown);
-                updateMoneyDisplay();
-            });
-            clownArea.getChildren().add(view);
+                view.setOnMouseClicked(e -> {
+                    gameController.slapClown(clown);
+                    updateMoneyDisplay();
+                });
+                // Добавление обработчиков для перетаскивания
+                addDragHandlers(view, clown);
+
+                transition.play();
+                clownArea.getChildren().add(view);
+                display = new ClownDisplay(view, transition);
+                clownDisplays.put(clown.getId(), display);
+            } else {
+                // Продолжаем анимацию для уже существующих клоунов
+                display.startAnimation();
+            }
         }
     }
+
+    private void addDragHandlers(ImageView view, ClownsClass clown) {
+        final Delta dragDelta = new Delta();
+        final boolean[] isDragging = new boolean[1]; // Флаг, указывающий на перемещение
+
+        view.setOnMousePressed(event -> {
+            // При нажатии, останавливаем анимацию для стабильности перемещения
+            clownDisplays.get(clown.getId()).getTransition().pause();
+
+            dragDelta.x = view.getLayoutX() - event.getSceneX();
+            dragDelta.y = view.getLayoutY() - event.getSceneY();
+            view.setCursor(Cursor.MOVE);
+            isDragging[0] = false; // Сброс флага перетаскивания
+        });
+
+        view.setOnMouseDragged(event -> {
+            double newX = event.getSceneX() + dragDelta.x;
+            double newY = event.getSceneY() + dragDelta.y;
+            view.setLayoutX(newX);
+            view.setLayoutY(newY);
+            isDragging[0] = true; // Флаг перетаскивания устанавливается в true
+            event.consume(); // Предотвращаем дополнительные события клика
+        });
+
+        view.setOnMouseReleased(event -> {
+            view.setCursor(Cursor.HAND);
+            if (isDragging[0]) {
+                // Если было перемещение, проверяем условия для скрещивания
+                checkForBreeding(view, clown);
+                isDragging[0] = false; // Сброс флага после отпускания кнопки мыши
+            }
+            // Возобновляем анимацию только если не было скрещивания
+            clownDisplays.get(clown.getId()).getTransition().play();
+        });
+
+        view.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                // Обработка двойного клика как избиение
+                gameController.slapClown(clown);
+                updateMoneyDisplay();
+            }
+        });
+    }
+
+
+
+    private void checkForBreeding(ImageView draggedClownView, ClownsClass draggedClown) {
+        System.out.println("we are here!");
+        Rectangle2D dragBounds = new Rectangle2D(
+                draggedClownView.getLayoutX(),
+                draggedClownView.getLayoutY(),
+                draggedClownView.getFitWidth(),
+                draggedClownView.getFitHeight()
+        );
+
+        for (Map.Entry<Integer, ClownDisplay> entry : clownDisplays.entrySet()) {
+            ImageView targetView = entry.getValue().getView();
+            if (targetView != draggedClownView) {
+                Rectangle2D targetBounds = new Rectangle2D(
+                        targetView.getLayoutX(),
+                        targetView.getLayoutY(),
+                        targetView.getFitWidth(),
+                        targetView.getFitHeight()
+                );
+                if (dragBounds.intersects(targetBounds)) {
+                    System.out.println("we win this game!");
+                    ClownsClass targetClown = gameController.getClownById(entry.getKey());
+                    if (targetClown != null && draggedClown.getClownLevel() == targetClown.getClownLevel()) {
+                        gameController.breeding(draggedClown.getId(), targetClown.getId());
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
 
     public void updateMoneyDisplay() {
         moneyLabel.setText("Money: " + gameController.getMoney() + " tears");
@@ -244,24 +332,6 @@ public class GameGUI extends Application {
         worldSelector.setItems(FXCollections.observableArrayList(getWorldNames())); // Обновление списка в ComboBox
     }
 
-    /*public void startGameTutorial() {
-        // Предоставляем первого клоуна
-        gameController.buyClown(1); // Покупаем первого клоуна уровня 1
-        showAlert("Welcome!", "Welcome to the Clown Breeding Game!\n" +
-                "You have received your first clown to get started.\n" +
-                "Check out your new clown in the clown display area!");
-
-        // Дальнейшие инструкции игроку
-        showAlert("Tutorial", "This is a brief tutorial to get you started:\n" +
-                "- Use the 'Shop' button to buy new clowns.\n" +
-                "- Click on clowns in the clown area to slap them and earn tears.\n" +
-                "- Use the 'World' button to switch between different worlds as you unlock them.\n" +
-                "- Breed clowns by selecting two of the same level when you have more than one.");
-
-        // Предложение продолжить самостоятельное исследование игры
-        showAlert("Explore", "Now, feel free to explore the game on your own.\n" +
-                "Try to breed clowns to unlock new levels and worlds!");
-    }*/
     public void startGameTutorial() {
         // Anname mängijale esimese klouni
         gameController.buyClown(1); // Ostame esimese taseme klouni
