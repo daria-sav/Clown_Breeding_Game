@@ -2,20 +2,20 @@
 //HashMap<Integer(lvl), String(namePicture[0](klowns name), namePicture[1](picture link))>
 
 //word 1
-Peeter Paanika;1;clown1.png
-Kertu Sambuka;2;name
-Bim Bam-Boom;3;name
-Pipi Pikksukk;4;name
-Irmeli Imelik;5;name
-Anton Rahu;6;name
+Peeter Paanika;1;Peeter_Paanika.png
+Darina;2;Darina.png
+Lobzik;3;Lobzik.png
+Jeva;4;Jeva.png
+Elizar;5;Elizar.png
+Anton Patatas;6;Anton_Patatas.png
 
 //word 2
-lvl_7;7;name
-lvl_8;8;name
-lvl_9;9;name
-lvl_10;10;name
-lvl_11;11;name
-lvl_12;12;name
+A;7;clown1
+B;8;clown2
+G;9;clown3
+D;10;clown4
+L;11;clown5
+P;12;clown6
 
 //word 3
 lvl_13;13;name
