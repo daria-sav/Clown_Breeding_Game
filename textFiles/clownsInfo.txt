@@ -18,12 +18,12 @@ L;11;/world2/clown5.png
 P;12;/world2/clown6.png
 
 //word 3
-lvl_13;13;/world3/clown13.png
-lvl_14;14;/world3/clown14.png
-lvl_15;15;/world3/clown15.png
-lvl_16;16;/world3/clown16.png
-lvl_17;17;/world3/clown17.png
-lvl_18;18;/world3/clown18.png
+Arhny;13;/world3/clown13.png
+Akri;14;/world3/clown14.png
+Antry;15;/world3/clown15.png
+Niki;16;/world3/clown16.png
+Gidry;17;/world3/clown17.png
+Gomicy;18;/world3/clown18.png
 
 //word 4
 lvl_19;19;name

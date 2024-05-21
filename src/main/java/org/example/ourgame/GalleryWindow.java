@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -31,24 +32,29 @@ public class GalleryWindow extends Stage {
         grid.setPadding(new Insets(10)); // Määrab ruudustiku äärise
         grid.setHgap(10); // Määrab horisontaalse vahe
         grid.setVgap(10); // Määrab vertikaalse vahe
+        grid.setAlignment(Pos.CENTER);
 
         List<ClownsClass> clowns = gameController.getAllOpenedClowns(); // Saad kõik avatud klounid
+        int columns = 4; // klouni reas
         int columnIndex = 0;
         int rowIndex = 0;
 
         // Lisab iga klouni ruudustikku
         for (ClownsClass clown : clowns) {
-            VBox vBox = createClownEntry(clown);
-            grid.add(vBox, columnIndex, rowIndex);
+            VBox clownEntry = createClownEntry(clown);
+            grid.add(clownEntry, columnIndex, rowIndex);
 
             columnIndex++;
-            if (columnIndex >= 3) {
+            if (columnIndex == columns) {
                 columnIndex = 0;
                 rowIndex++;
             }
         }
 
-        Scene scene = new Scene(grid); // Loob stseeni ruudustikuga
+        ScrollPane scrollPane = new ScrollPane(grid);
+        scrollPane.setFitToWidth(true);
+
+        Scene scene = new Scene(scrollPane, 500, 400); // Loob stseeni ruudustikuga
         this.setScene(scene);
     }
 
