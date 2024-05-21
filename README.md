@@ -4,6 +4,7 @@
 Daria Savtsenko, Elisabeth Serikova
 
 **EST**
+
 Tere! Clown Breeding Game on mäng, mis on loodud Java ja JavaFX programmeerimiskeeltes. 
 Mängu põhimõte on üsna lihtne: mängu alguses on mängijal ligipääs ühele maailmale, kus elab üks tegelane - kloun Peeter Paanika. 
 Mängu alguses saab igaüks lühikese juhendi: uue taseme klouni avamiseks on vaja ristuda kahe eelmise taseme kloune. 
@@ -12,6 +13,7 @@ Kui mängija avastab ühes maailmas 6 erinevat tüüpi klouni, avaneb talle jär
 Samuti on tal ligipääs juba avatud tegelaste galeriile ja avatud maailmade vahel liikumise võimele.
 
 **ENG**
+
 Hello! Clown Breeding Game is a game created using Java and JavaFX programming languages.
 The gameplay is quite simple: at the beginning of the game, the player has access to one world, inhabited by one character - the clown Peeter Paanika.
 At the beginning of the game, everyone receives a short tutorial: to unlock a new level clown, you need to crossbreed two clowns from the previous levels.
