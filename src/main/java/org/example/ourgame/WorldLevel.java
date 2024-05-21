@@ -53,6 +53,14 @@ public class WorldLevel implements Serializable {
         return clowns;
     }
 
+    public int getMinClownLevel() {
+        return minClownLevel;
+    }
+
+    public int getMaxClownLevel() {
+        return maxClownLevel;
+    }
+
     /**
      * antud meetod simuleerib karpi avamist, genereerides klouni taseme vastavalt kasutaja tasemele ja juhuslikule tegurile
      * @param maxOpenedClown - maksimaalne tase, millisega oli juba avatud kloun
