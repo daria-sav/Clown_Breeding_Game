@@ -338,7 +338,6 @@ public class GameGUI extends Application {
      * @param draggedClown - lohistatud klouni objekt
      */
     private void checkForBreeding(ImageView draggedClownView, ClownsClass draggedClown) {
-        System.out.println(1);
         Rectangle2D dragBounds = new Rectangle2D(
                 draggedClownView.getBoundsInParent().getMinX(),
                 draggedClownView.getBoundsInParent().getMinY(),
@@ -349,7 +348,6 @@ public class GameGUI extends Application {
         for (Map.Entry<Integer, ClownDisplay> entry : clownDisplays.entrySet()) {
             ImageView targetView = entry.getValue().getView();
             if (targetView != draggedClownView) {
-                System.out.println(2);
                 Rectangle2D targetBounds = new Rectangle2D(
                         targetView.getBoundsInParent().getMinX(),
                         targetView.getBoundsInParent().getMinY(),
@@ -357,15 +355,27 @@ public class GameGUI extends Application {
                         targetView.getBoundsInParent().getHeight()
                 );
                 if (dragBounds.intersects(targetBounds)) {
-                    System.out.println(3);
                     ClownsClass targetClown = gameController.getClownById(entry.getKey());
                     if (targetClown != null && draggedClown.getClownLevel() == targetClown.getClownLevel()) {
-                        gameController.breeding(draggedClown.getId(), targetClown.getId());
+                        if (draggedClown.getClownLevel() == 18) {
+                            showEndGameAlert();
+                        } else {
+                            gameController.breeding(draggedClown.getId(), targetClown.getId());
+                        }
                         return; // Peatame edasise otsingu pärast edukat paljunemist
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Näitame mängu lõpu märguannet
+     */
+    private void showEndGameAlert() {
+        Platform.runLater(() -> showAlert("Mängu lõpp", "Märkus! Oled jõudnud mängu lõppu ja avanud kõik klounid!\n" +
+                "Sa ei saa rohkem uusi maailmu avada, kuid võid oma lõbuks kloune edasi aretada ja nendega mängida!\n" +
+                "Aitäh, et mängisid meie mängu!"));
     }
 
     /**

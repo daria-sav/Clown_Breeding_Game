@@ -52,6 +52,22 @@ public class WorldSelectionWindow {
             layout.getChildren().add(world2Button);
         }
 
+        // Nupu "Maailm 3" lisamine ja selle tegevuse määramine
+        Button world3Button = new Button("Maailm 3");
+        world3Button.setOnAction(e -> {
+            if (gameController.isWorldOpen(3)) {
+                gameController.switchWorld(3);
+                window.close();
+            } else {
+                gameController.showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
+            }
+        });
+
+        // Lisame nupu "Maailm 3" ainult siis, kui see on avatud
+        if (gameController.isWorldOpen(3)) {
+            layout.getChildren().add(world3Button);
+        }
+
         Scene scene = new Scene(layout, 300, 200);
         window.setScene(scene);
         window.showAndWait();
