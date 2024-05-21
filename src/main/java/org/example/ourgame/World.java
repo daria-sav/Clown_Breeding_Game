@@ -1,16 +1,10 @@
 package org.example.ourgame;
 
-import org.example.ourgame.BoxesClass;
-import org.example.ourgame.ClownsClass;
-import org.example.ourgame.LevelInfo;
-import org.example.ourgame.WorldLevel;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Scanner;
 
 
 public class World {

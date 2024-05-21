@@ -1,9 +1,11 @@
 package org.example.ourgame;
 
+import java.io.Serializable;
 import java.util.Random;
 
 // antud klass on klounide objektide jaoks ning nende töötlemisega
-public class ClownsClass implements Comparable<ClownsClass> {
+public class ClownsClass implements Comparable<ClownsClass>, Serializable {
+    private static final long serialVersionUID = 1L;
     private static int idCounter = 0;
     private int id;
     private String name;
@@ -11,7 +13,7 @@ public class ClownsClass implements Comparable<ClownsClass> {
     private String picture;
 
     public ClownsClass(String name, int clownLevel, String picture) {
-        this.id = ++idCounter;  // Увеличиваем счётчик и присваиваем ID
+        this.id = ++idCounter;
         this.name = name;
         this.clownLevel = clownLevel;
         this.picture = picture;
@@ -38,9 +40,6 @@ public class ClownsClass implements Comparable<ClownsClass> {
         return picture;
     }
 
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
     /**
      * antud meetod simuleerib klouni peksmist ja arvutab välja teenitud pisarate arvu.
      * @return - teenitud raha
