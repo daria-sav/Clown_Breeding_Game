@@ -197,6 +197,9 @@ public class GameController {
             int minLevel = 0;
             int maxLevel = 0;
             if (maxOpenedClown <= worldMinLevel + 2) {
+                if (currentWorldId != 1) {
+                    return availableClowns;
+                }
                 maxLevel = worldMinLevel;
             } else {
                 maxLevel = maxOpenedClown - 2;
