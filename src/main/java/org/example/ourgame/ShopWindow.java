@@ -3,7 +3,9 @@ package org.example.ourgame;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -28,6 +30,10 @@ public class ShopWindow extends Stage {
         this.setTitle("Klounide Pood");
         VBox clownsBox = setupClownsDisplay();
 
+        if (clownsBox == null) {
+            return; // pood ei avane, kui pole klouni ostmiseks
+        }
+
         Scene scene = new Scene(clownsBox);
         this.setScene(scene);
     }
@@ -37,12 +43,13 @@ public class ShopWindow extends Stage {
      * @return VBox - kasti, mis sisaldab klounide kirjeid
      */
     private VBox setupClownsDisplay() {
+        // Värskendame klounide nimekirja enne akna kuvamist
+        List<ClownsClass> availableClowns = gameController.getAvailableClowns();
+
         VBox clownsBox = new VBox(10);
         clownsBox.setAlignment(Pos.CENTER);
         clownsBox.setPadding(new Insets(20));
 
-        // Värskendame klounide nimekirja enne akna kuvamist
-        List<ClownsClass> availableClowns = gameController.getAvailableClowns();
         for (ClownsClass clown : availableClowns) {
             HBox clownEntry = createClownEntry(clown);
             clownsBox.getChildren().add(clownEntry);
@@ -74,4 +81,5 @@ public class ShopWindow extends Stage {
         clownEntry.setAlignment(Pos.CENTER);
         return clownEntry;
     }
+
 }

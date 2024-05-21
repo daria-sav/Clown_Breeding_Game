@@ -17,8 +17,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
+
 import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -71,9 +72,14 @@ public class GameGUI extends Application {
 
         Button shopButton = createButton("Shop.png");
         shopButton.setOnAction(event -> {
-            ShopWindow shopWindow = new ShopWindow(gameController);
-            shopWindow.showAndWait();
-            updateClownDisplay();
+            List<ClownsClass> availableClowns = gameController.getAvailableClowns();
+            if (availableClowns.isEmpty()) {
+                showAlert("Pood suletud", "Selles maailmas ei saa sa veel kloune osta. Palun areta neid eelmisel maailmas!");
+            } else {
+                ShopWindow shopWindow = new ShopWindow(gameController);
+                shopWindow.showAndWait();
+                updateClownDisplay();
+            }
         });
 
         // Maailmanimekirja seadistamine
@@ -106,7 +112,6 @@ public class GameGUI extends Application {
         root.getChildren().add(worldList);  // Lisame maailmanimekirja juurepaneelile
         root.setCenter(clownArea);
 
-        //clownArea.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, CornerRadii.EMPTY, Insets.EMPTY)));
         clownArea.setBackground(null);
 
         setupGalleryButton(root);
@@ -114,6 +119,7 @@ public class GameGUI extends Application {
         Scene scene = new Scene(root, SCREEN_WIDTH, SCREEN_HEIGHT);
         pealava.setScene(scene);
         pealava.setTitle("Breeding Clowns Game");
+
         // Kontrollime, kas mängu andmed on olemas
         File saveFile = new File("game_data.bin");
         if (saveFile.exists()) {
@@ -135,17 +141,16 @@ public class GameGUI extends Application {
         clownArea.toFront();
         updateBackground(gameController.getCurrentWorldId());
 
+
         // Käivitame õpetuse pärast liidese täielikku laadimist, kui see on esmakordne käivitamine
         if (firstLaunch) {
             Platform.runLater(this::startGameTutorial);
         }
     }
 
-
-
     /**
-     * Обновляет фон в зависимости от мира
-     * @param worldId - идентификатор мира
+     * Värskendab tausta olenevalt maailmast
+     * @param worldId – maailma identifikaator
      */
     public void updateBackground(int worldId) {
         String backgroundPath = gameController.getBackgroundPathForWorld(worldId);

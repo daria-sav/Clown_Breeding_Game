@@ -1,12 +1,14 @@
 package org.example.ourgame;
 
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -36,8 +38,8 @@ public class GalleryWindow extends Stage {
 
         // Lisab iga klouni ruudustikku
         for (ClownsClass clown : clowns) {
-            StackPane stackPane = createClownEntry(clown);
-            grid.add(stackPane, columnIndex, rowIndex);
+            VBox vBox = createClownEntry(clown);
+            grid.add(vBox, columnIndex, rowIndex);
 
             columnIndex++;
             if (columnIndex >= 3) {
@@ -55,11 +57,12 @@ public class GalleryWindow extends Stage {
      * @param clown - klouni objekt
      * @return StackPane - konteiner klouni pildi ja nimega
      */
-    private StackPane createClownEntry(ClownsClass clown) {
-        StackPane stackPane = new StackPane();
+    private VBox createClownEntry(ClownsClass clown) {
+        VBox vBox = new VBox(5);
         ImageView imageView = new ImageView(new Image(clown.getPicture(), 100, 100, true, true)); // Loob pildivaate klouni pildiga
         Label label = new Label(clown.getName()); // Loob sildi klouni nimega
-        stackPane.getChildren().addAll(imageView, label); // Lisab pildi ja sildi konteinerisse
-        return stackPane;
+        vBox.getChildren().addAll(imageView, label); // Lisab pildi ja sildi konteinerisse
+        vBox.setAlignment(Pos.CENTER);
+        return vBox;
     }
 }
