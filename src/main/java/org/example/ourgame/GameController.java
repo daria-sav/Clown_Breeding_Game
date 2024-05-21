@@ -194,8 +194,13 @@ public class GameController {
         if (currentWorld != null) {
             int worldMinLevel = currentWorld.getMinClownLevel();
             int worldMaxLevel = currentWorld.getMaxClownLevel();
-            int minLevel = 0;
             int maxLevel = 0;
+
+            if (currentWorldId != 1 && maxOpenedClown < worldMinLevel + 2) {
+                return availableClowns;
+            } else {
+                maxLevel = maxOpenedClown - 2;
+            }
             if (maxOpenedClown <= worldMinLevel + 2) {
                 if (currentWorldId != 1) {
                     return availableClowns;
@@ -203,11 +208,10 @@ public class GameController {
                 maxLevel = worldMinLevel;
             } else {
                 maxLevel = maxOpenedClown - 2;
-                minLevel = worldMinLevel;
             }
 
             // Iga taseme jaoks, mis on avatud ja mitte kõrgem kui maksimaalselt avatud tase
-            for (int level = minLevel; level <= maxLevel && level <= worldMaxLevel; level++) {
+            for (int level = worldMinLevel; level <= maxLevel && level <= worldMaxLevel; level++) {
                 if (clownInfoMap.containsKey(level)) {
                     String[] clownData = clownInfoMap.get(level);
                     availableClowns.add(new ClownsClass(clownData[0], level, clownData[1]));

@@ -141,6 +141,9 @@ public class GameGUI extends Application {
         clownArea.toFront();
         updateBackground(gameController.getCurrentWorldId());
 
+        // vaatleme akna suuruste muutmist
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> updateBackground(gameController.getCurrentWorldId()));
+        scene.heightProperty().addListener((obs, oldVal, newVal) -> updateBackground(gameController.getCurrentWorldId()));
 
         // Käivitame õpetuse pärast liidese täielikku laadimist, kui see on esmakordne käivitamine
         if (firstLaunch) {
@@ -155,7 +158,8 @@ public class GameGUI extends Application {
     public void updateBackground(int worldId) {
         String backgroundPath = gameController.getBackgroundPathForWorld(worldId);
         Image backgroundImg = new Image(backgroundPath);
-        BackgroundImage background = new BackgroundImage(backgroundImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
+        BackgroundSize backgroundSize = new BackgroundSize(100, 100, true, true, true, false);
+        BackgroundImage background = new BackgroundImage(backgroundImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, backgroundSize);
         root.setBackground(new Background(background));
     }
 
