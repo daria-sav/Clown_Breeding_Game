@@ -35,6 +35,7 @@ public class GameGUI extends Application {
     private ComboBox<String> worldSelector; // ComboBox maailma valimiseks
     private Map<Integer, ClownDisplay> clownDisplays = new HashMap<>();
     private boolean firstLaunch = false;
+    private BorderPane root; // Peamine paigutus
 
     public static void main(String[] args) {
         launch(args);
@@ -44,8 +45,7 @@ public class GameGUI extends Application {
     public void start(Stage pealava) {
         gameController = new GameController(12, 1, this); // algne saldo ja maailmad, hiljem muuda loogikat maxOpenedClown
 
-        BorderPane root = new BorderPane();
-        setupBackground(root);
+        root = new BorderPane();
 
         clownArea = new Pane();
         clownArea.setPrefSize(800, 400);
@@ -65,6 +65,7 @@ public class GameGUI extends Application {
                 int selectedWorld = Integer.parseInt(newVal.split(" ")[1]); // "World 1" -> 1
                 gameController.switchWorld(selectedWorld);
                 updateClownDisplay();
+                updateBackground(selectedWorld);
             }
         });
 
@@ -132,6 +133,7 @@ public class GameGUI extends Application {
 
         updateClownDisplay(); // Näitame kloune
         clownArea.toFront();
+        updateBackground(gameController.getCurrentWorldId());
 
         // Käivitame õpetuse pärast liidese täielikku laadimist, kui see on esmakordne käivitamine
         if (firstLaunch) {
@@ -142,11 +144,12 @@ public class GameGUI extends Application {
 
 
     /**
-     * Taustapildi seadistamine
-     * @param root - peamine paigutus
+     * Обновляет фон в зависимости от мира
+     * @param worldId - идентификатор мира
      */
-    private void setupBackground(BorderPane root) {
-        Image backgroundImg = new Image("world1" + File.separator + "background_1.png");
+    public void updateBackground(int worldId) {
+        String backgroundPath = gameController.getBackgroundPathForWorld(worldId);
+        Image backgroundImg = new Image(backgroundPath);
         BackgroundImage background = new BackgroundImage(backgroundImg, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, BackgroundSize.DEFAULT);
         root.setBackground(new Background(background));
     }

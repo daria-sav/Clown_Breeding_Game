@@ -44,6 +44,7 @@ public class GameController {
             setCurrentWorld(worldLevel);
             gameGUI.updateClownDisplay();
             gameGUI.updateWorldsDisplay();
+            gameGUI.updateBackground(worldLevel); // Обновляем фон при переключении мира
         } else {
             gameGUI.showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
         }
@@ -95,10 +96,20 @@ public class GameController {
     private void initializeWorlds() {
         worlds.put(1, new WorldLevel(1, 1, "/world1/background_1.png"));
         worlds.put(2, new WorldLevel(2, 7, "/world2/background_2.png"));
-        worlds.put(3, new WorldLevel(3, 13, "wallpaper.jpg"));
+        worlds.put(3, new WorldLevel(3, 13, "/world3/background_3.png"));
 
         // Algse maailma seadistamine pärast initsialiseerimist
         setCurrentWorld(1);
+    }
+
+    /**
+     * Antud meetod-----
+     * @param worldLevel
+     * @return
+     */
+    public String getBackgroundPathForWorld(int worldLevel) {
+        WorldLevel world = worlds.get(worldLevel);
+        return world != null ? world.getBackgroundImage() : "/default/background.png";
     }
 
     /**
@@ -179,11 +190,25 @@ public class GameController {
      */
     public List<ClownsClass> getAvailableClowns() {
         List<ClownsClass> availableClowns = new ArrayList<>();
-        // Iga taseme jaoks, mis on avatud ja mitte kõrgem kui maksimaalselt avatud tase
-        for (int level = 1; level <= maxOpenedClown; level++) {
-            if (clownInfoMap.containsKey(level)) {
-                String[] clownData = clownInfoMap.get(level);
-                availableClowns.add(new ClownsClass(clownData[0], level, clownData[1]));
+
+        if (currentWorld != null) {
+            int worldMinLevel = currentWorld.getMinClownLevel();
+            int worldMaxLevel = currentWorld.getMaxClownLevel();
+            int minLevel = 0;
+            int maxLevel = 0;
+            if (maxOpenedClown <= worldMinLevel + 2) {
+                maxLevel = worldMinLevel;
+            } else {
+                maxLevel = maxOpenedClown - 2;
+                minLevel = worldMinLevel;
+            }
+
+            // Iga taseme jaoks, mis on avatud ja mitte kõrgem kui maksimaalselt avatud tase
+            for (int level = minLevel; level <= maxLevel && level <= worldMaxLevel; level++) {
+                if (clownInfoMap.containsKey(level)) {
+                    String[] clownData = clownInfoMap.get(level);
+                    availableClowns.add(new ClownsClass(clownData[0], level, clownData[1]));
+                }
             }
         }
         return availableClowns;
