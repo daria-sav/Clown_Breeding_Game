@@ -44,7 +44,7 @@ public class GameGUI extends Application {
 
     @Override
     public void start(Stage pealava) {
-        gameController = new GameController(12, 1, this); // algne saldo ja maailmad, hiljem muuda loogikat maxOpenedClown
+        gameController = new GameController(120000, 1, this); // algne saldo ja maailmad, hiljem muuda loogikat maxOpenedClown
 
         root = new BorderPane();
 
