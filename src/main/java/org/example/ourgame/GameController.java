@@ -45,7 +45,7 @@ public class GameController {
             setCurrentWorld(worldLevel);
             gameGUI.updateClownDisplay();
             gameGUI.updateWorldsDisplay();
-            gameGUI.updateBackground(worldLevel); // Обновляем фон при переключении мира
+            gameGUI.updateBackground(worldLevel);
         } else {
             gameGUI.showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
         }
@@ -104,7 +104,7 @@ public class GameController {
     }
 
     /**
-     * Antud meetod-----
+     * Antud meetod tagastab maailma tagaplaani
      * @param worldLevel
      * @return
      */
@@ -114,20 +114,11 @@ public class GameController {
     }
 
     /**
-     * Seadistab maailmad
-     * @param worlds - maailmade kaart
-     */
-    public void setWorlds(HashMap<Integer, WorldLevel> worlds) {
-        this.worlds = worlds;
-    }
-
-    /**
      * Seadistab praeguse maailma
      * @param worldLevel - maailma tase
      */
     public void setCurrentWorld(int worldLevel) {
         this.currentWorld = this.worlds.get(worldLevel);
-        System.out.println("Set current world to " + worldLevel + " with " + (currentWorld != null ? currentWorld.getClowns().size() : "null") + " clowns");
     }
 
     /**
@@ -193,10 +184,8 @@ public class GameController {
     public List<ClownsClass> getCurrentClowns() {
         if (currentWorld != null && worlds.containsKey(currentWorldId)) {
             List<ClownsClass> clowns = new ArrayList<>(worlds.get(currentWorldId).getClowns().values());
-            System.out.println("Current world has " + clowns.size() + " clowns");
             return clowns;
         } else {
-            System.out.println("No current world or world is not initialized");
             return new ArrayList<>();
         }
     }
@@ -238,8 +227,6 @@ public class GameController {
         }
         return availableClowns;
     }
-
-
 
     /**
      * Tagastab kõik avatud klounid
@@ -286,10 +273,8 @@ public class GameController {
         if (clownData != null) {
             ClownsClass clown = new ClownsClass(clownData[0], level, clownData[1]);
             clownIndex.put(clown.getId(), clown);
-            System.out.println("Adding clown: " + clown.getName() + ", Level: " + level);
             return Math.max(level, maxOpenedClown);
         } else {
-            System.out.println("No clown data available for level " + level);
             return maxOpenedClown;
         }
     }
@@ -302,7 +287,6 @@ public class GameController {
     public void slapClown(ClownsClass clown) {
         double moneyEarned = clown.slapTheClown();
         moneyInWallet += moneyEarned;
-        System.out.println("You earned " + moneyEarned + " tears. Total: " + moneyInWallet);
         gameGUI.updateMoneyDisplay();
         gameGUI.showAlert("Clown Slapped", "You earned " + moneyEarned + " tears");
     }
@@ -317,7 +301,6 @@ public class GameController {
         ClownsClass clown2 = currentWorld.getClowns().get(clown2Id);
 
         if (clown1 == null || clown2 == null) {
-            System.out.println("One of the clowns was not found.");
             return; // Kui üks klounidest pole leitud
         }
 
@@ -326,7 +309,6 @@ public class GameController {
 
             currentWorld.getClowns().remove(clown1Id);
             currentWorld.getClowns().remove(clown2Id);
-            System.out.println("Clowns removed from current world, breeding new clown at level: " + newLevel);
 
             if ((newLevel - 1) % 6 != 0) {
                 maxOpenedClown = addClown(newLevel, currentWorld.getClowns(), clownInfoMap, maxOpenedClown);
@@ -342,8 +324,6 @@ public class GameController {
 
             gameGUI.updateClownDisplay();
             gameGUI.updateWorldsDisplay();
-        } else {
-            System.out.println("Clowns have different levels, cannot breed.");
         }
     }
 
@@ -388,7 +368,7 @@ public class GameController {
                 maxOpenedClown = in.readInt();
                 currentWorldId = in.readInt();
                 openedWorldsList = (boolean[]) in.readObject();
-                endGameAlertShown = in.readBoolean(); // Загружаем флаг
+                endGameAlertShown = in.readBoolean();
                 setCurrentWorld(currentWorldId);
                 gameGUI.updateClownDisplay();
                 gameGUI.updateWorldsDisplay();
