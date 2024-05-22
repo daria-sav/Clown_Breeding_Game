@@ -33,6 +33,7 @@ public class GalleryWindow extends Stage {
         grid.setHgap(10); // Määrab horisontaalse vahe
         grid.setVgap(10); // Määrab vertikaalse vahe
         grid.setAlignment(Pos.CENTER);
+        grid.setStyle("-fx-background-color: black;");
 
         List<ClownsClass> clowns = gameController.getAllOpenedClowns(); // Saad kõik avatud klounid
         int columns = 4; // klouni reas
@@ -54,7 +55,7 @@ public class GalleryWindow extends Stage {
         ScrollPane scrollPane = new ScrollPane(grid);
         scrollPane.setFitToWidth(true);
 
-        Scene scene = new Scene(scrollPane, 500, 400); // Loob stseeni ruudustikuga
+        Scene scene = new Scene(scrollPane, 600, 160); // Loob stseeni ruudustikuga
         this.setScene(scene);
     }
 
@@ -67,8 +68,20 @@ public class GalleryWindow extends Stage {
         VBox vBox = new VBox(5);
         ImageView imageView = new ImageView(new Image(clown.getPicture(), 100, 100, true, true)); // Loob pildivaate klouni pildiga
         Label label = new Label(clown.getName()); // Loob sildi klouni nimega
+        //
+        label.setStyle("-fx-text-fill: white;");
+        //
+
         vBox.getChildren().addAll(imageView, label); // Lisab pildi ja sildi konteinerisse
         vBox.setAlignment(Pos.CENTER);
+        vBox.setStyle(
+                "-fx-background-color: #383838; " +
+                        "-fx-border-color: #505050; " +
+                        "-fx-border-width: 1px; " +
+                        "-fx-border-radius: 10px;" +
+                        "-fx-padding: 10px;"
+        );
+
         return vBox;
     }
 }

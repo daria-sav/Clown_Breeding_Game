@@ -29,6 +29,7 @@ public class ShopWindow extends Stage {
         this.initModality(Modality.APPLICATION_MODAL);
         this.setTitle("Klounide Pood");
         VBox clownsBox = setupClownsDisplay();
+        clownsBox.setStyle("-fx-background-color: black;");
 
         if (clownsBox == null) {
             return; // pood ei avane, kui pole klouni ostmiseks
@@ -37,6 +38,7 @@ public class ShopWindow extends Stage {
         Scene scene = new Scene(clownsBox);
         this.setScene(scene);
     }
+
 
     /**
      * Meetod, mis loob ja tagastab VBox'i, mis sisaldab kättesaadavaid kloune.
@@ -49,6 +51,8 @@ public class ShopWindow extends Stage {
         VBox clownsBox = new VBox(10);
         clownsBox.setAlignment(Pos.CENTER);
         clownsBox.setPadding(new Insets(20));
+        //
+        clownsBox.getStyleClass().add("shop-window");
 
         for (ClownsClass clown : availableClowns) {
             HBox clownEntry = createClownEntry(clown);
@@ -67,7 +71,15 @@ public class ShopWindow extends Stage {
         ImageView clownImage = new ImageView(new Image(clown.getPicture(), 100, 100, true, true));
         double price = Math.pow(clown.getClownLevel(), 3) + 5;
         Label label = new Label(clown.getName() + ", Tase " + clown.getClownLevel() + " - Hind: " + price);
+        label.setStyle("-fx-text-fill: white;");
         Button buyButton = new Button("Osta");
+        buyButton.setStyle(
+                "-fx-background-color: black; " +
+                        "-fx-text-fill: white;"
+        );
+        buyButton.setOnMouseEntered(e -> buyButton.setStyle("-fx-background-color: red; -fx-text-fill: white;"));
+        buyButton.setOnMouseExited(e -> buyButton.setStyle("-fx-background-color: black; -fx-text-fill: white;"));
+        //
         buyButton.setOnAction(e -> {
             try {
                 gameController.buyClown(clown.getClownLevel());
@@ -79,6 +91,13 @@ public class ShopWindow extends Stage {
 
         HBox clownEntry = new HBox(10, clownImage, label, buyButton);
         clownEntry.setAlignment(Pos.CENTER);
+        clownEntry.setPadding(new Insets(10));
+        clownEntry.setStyle(
+                "-fx-background-color: #383838; " +
+                        "-fx-border-color: #505050; " +
+                        "-fx-border-width: 1px; "
+        );
+
         return clownEntry;
     }
 

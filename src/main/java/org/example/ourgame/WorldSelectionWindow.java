@@ -9,67 +9,59 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class WorldSelectionWindow {
+//public class WorldSelectionWindow {
+public class WorldSelectionWindow extends Stage {
+    // Akna laiuse ja kõrguse seadistamine
+    private static final int WINDOW_WIDTH = 300;
+    private static final int WINDOW_HEIGHT = 200;
 
     /**
      * Meetod, mis kuvab maailma valiku akna.
      * @param gameController - viide mängukontrollerile
      */
     public void show(GameController gameController) {
-        Stage window = new Stage();
-        window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("Maailm");
-
+        // Loome vertikaalse paigutuse (VBox)
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
+        layout.setStyle("-fx-background-color: #2b2b2b;");
 
-        // Sildi lisamine aknasse
+        // Loome sildi "Vali maailm:"
         Label label = new Label("Vali maailm:");
+        label.setStyle("-fx-text-fill: white;");
         layout.getChildren().add(label);
 
-        // Nupu "Maailm 1" lisamine ja selle tegevuse määramine
-        Button world1Button = new Button("Maailm 1");
-        world1Button.setOnAction(e -> {
-            gameController.switchWorld(1);
-            window.close();
-        });
-        layout.getChildren().add(world1Button);
+        // Käime läbi kõik maailmad
+        for (int i = 1; i <= gameController.getWorlds().size(); i++) {
+            // Kui maailm on avatud, siis lisame selle valikusse
+            if (gameController.isWorldOpen(i)) {
+                Button worldButton = new Button("Maailm " + i);
+                final int worldLevel = i;
 
-        // Nupu "Maailm 2" lisamine ja selle tegevuse määramine
-        Button world2Button = new Button("Maailm 2");
-        world2Button.setOnAction(e -> {
-            if (gameController.isWorldOpen(2)) {
-                gameController.switchWorld(2);
-                window.close();
-            } else {
-                gameController.showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
+                // Nupu stiili määramine
+                worldButton.setStyle(
+                        "-fx-background-color: black; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-padding: 5 10;"
+                );
+
+                // Hiirega üle nupu liikudes muudame värvi punaseks
+                worldButton.setOnMouseEntered(e -> worldButton.setStyle("-fx-background-color: red; -fx-text-fill: white;"));
+                // Hiirega nupult lahkudes taastame musta värvi
+                worldButton.setOnMouseExited(e -> worldButton.setStyle("-fx-background-color: black; -fx-text-fill: white;"));
+
+                // Nupule vajutades vahetame maailma
+                worldButton.setOnAction(e -> {
+                    gameController.switchWorld(worldLevel);
+                    close();    // Sulgeme akna pärast maailma valimist
+                });
+                layout.getChildren().add(worldButton);
             }
-        });
-
-        // Lisame nupu "Maailm 2" ainult siis, kui see on avatud
-        if (gameController.isWorldOpen(2)) {
-            layout.getChildren().add(world2Button);
         }
 
-        // Nupu "Maailm 3" lisamine ja selle tegevuse määramine
-        Button world3Button = new Button("Maailm 3");
-        world3Button.setOnAction(e -> {
-            if (gameController.isWorldOpen(3)) {
-                gameController.switchWorld(3);
-                window.close();
-            } else {
-                gameController.showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
-            }
-        });
-
-        // Lisame nupu "Maailm 3" ainult siis, kui see on avatud
-        if (gameController.isWorldOpen(3)) {
-            layout.getChildren().add(world3Button);
-        }
-
-        Scene scene = new Scene(layout, 300, 200);
-        window.setScene(scene);
-        window.showAndWait();
+        // Loome stseeni ja määrame selle aknale
+        Scene scene = new Scene(layout, WINDOW_WIDTH, WINDOW_HEIGHT);
+        setScene(scene);
+        showAndWait();  // Näitame akent ja ootame, kuni kasutaja valib maailma
     }
 }
