@@ -1,24 +1,28 @@
 package org.example.ourgame;
 
-import org.example.ourgame.Bonuses;
-import org.example.ourgame.BoxesClass;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.*;
 import java.util.Timer;
 // antud klass on mõeldut tasemete moodustamiseks, ning nende töötlemiseks
-public class WorldLevel {
+public class WorldLevel implements Serializable {
     //iga maailma jaoks on omad karbid, boonused ning klounid (isiklik HashMap)
 
+    private static final long serialVersionUID = 1L;
     private int level; // maailma tase
     private int minClownLevel; // minimaalne kluni tase, mis kuulub selle maailmale
     private int maxClownLevel; // maksimaalne klouni tase, mis kuulun selle maailmale
     private HashMap<Integer, BoxesClass> boxes = new HashMap<Integer, BoxesClass>(); // maailma karbid
     private ArrayList<Bonuses> bonuses = new ArrayList<Bonuses>(); // maailma boonused
-    private Timer timer;
+    private transient Timer timer;  // Transient, sest Timer ei ole seriaalitav
     // muutuja, mida kasutame karpi loomisel, et igal karpil oli oma unikaalne indeks
     private int boxCounter = 0;
     private String backgroundImage;
+    // iga maailma tagaplaan
     private HashMap<Integer, ClownsClass> clowns;
+    // maailma klounid
 
     // konstruktor
     public WorldLevel(int level, int minClownLevel, String backgroundImage) {
@@ -28,6 +32,8 @@ public class WorldLevel {
         this.timer = new Timer();
         this.backgroundImage = backgroundImage;
         this.clowns = new HashMap<>();
+        this.boxes = new HashMap<>();
+        this.bonuses = new ArrayList<>();
     }
 
     // getterid
@@ -45,6 +51,14 @@ public class WorldLevel {
 
     public HashMap<Integer, ClownsClass> getClowns() {
         return clowns;
+    }
+
+    public int getMinClownLevel() {
+        return minClownLevel;
+    }
+
+    public int getMaxClownLevel() {
+        return maxClownLevel;
     }
 
     /**
@@ -140,4 +154,13 @@ public class WorldLevel {
         return sum;
     }
     //main klassis (org.example.ourgame.World) lisame seda meie rahakotti
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.timer = new Timer();
+    }
 }

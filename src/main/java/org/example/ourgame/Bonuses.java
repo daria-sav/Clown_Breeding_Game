@@ -1,8 +1,9 @@
 package org.example.ourgame;
 
+import java.io.Serializable;
 import java.util.Random;
 // klass boonuste objektide jaoks
-public class Bonuses {
+public class Bonuses implements Serializable {
     /**
      * Antud meetod genereerib ja tagastab pisarate arvu vastavalt tasemele ja juhuslikule tegurile
      * @param level - maailmatase, millises mängime

@@ -1,6 +1,5 @@
 package org.example.ourgame;
 
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,18 +11,24 @@ import javafx.stage.Stage;
 
 public class WorldSelectionWindow {
 
+    /**
+     * Meetod, mis kuvab maailma valiku akna.
+     * @param gameController - viide mängukontrollerile
+     */
     public void show(GameController gameController) {
         Stage window = new Stage();
         window.initModality(Modality.APPLICATION_MODAL);
-        window.setTitle("World");
+        window.setTitle("Maailm");
 
         VBox layout = new VBox(10);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(20));
 
+        // Sildi lisamine aknasse
         Label label = new Label("Vali maailm:");
         layout.getChildren().add(label);
 
+        // Nupu "Maailm 1" lisamine ja selle tegevuse määramine
         Button world1Button = new Button("Maailm 1");
         world1Button.setOnAction(e -> {
             gameController.switchWorld(1);
@@ -31,6 +36,7 @@ public class WorldSelectionWindow {
         });
         layout.getChildren().add(world1Button);
 
+        // Nupu "Maailm 2" lisamine ja selle tegevuse määramine
         Button world2Button = new Button("Maailm 2");
         world2Button.setOnAction(e -> {
             if (gameController.isWorldOpen(2)) {
@@ -41,8 +47,25 @@ public class WorldSelectionWindow {
             }
         });
 
+        // Lisame nupu "Maailm 2" ainult siis, kui see on avatud
         if (gameController.isWorldOpen(2)) {
             layout.getChildren().add(world2Button);
+        }
+
+        // Nupu "Maailm 3" lisamine ja selle tegevuse määramine
+        Button world3Button = new Button("Maailm 3");
+        world3Button.setOnAction(e -> {
+            if (gameController.isWorldOpen(3)) {
+                gameController.switchWorld(3);
+                window.close();
+            } else {
+                gameController.showAlert("Maailm on suletud", "Sa ei saa veel siseneda sellesse maailma.");
+            }
+        });
+
+        // Lisame nupu "Maailm 3" ainult siis, kui see on avatud
+        if (gameController.isWorldOpen(3)) {
+            layout.getChildren().add(world3Button);
         }
 
         Scene scene = new Scene(layout, 300, 200);
