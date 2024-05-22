@@ -20,6 +20,7 @@ public class GameController {
     private boolean[] openedWorldsList;
     private static final Logger LOGGER = Logger.getLogger(GameController.class.getName());
     private static int clownCounter = 0;
+    private boolean endGameAlertShown = false;
 
     public int getCurrentWorldId() {
         return currentWorldId;
@@ -167,6 +168,22 @@ public class GameController {
      */
     public boolean[] getOpenedWorldsList() {
         return openedWorldsList;
+    }
+
+    /**
+     * Tagastab tõeväärtuse, kas mäng oli juba lõpetatud
+     * @return tõeväärtus mängu lõppu kohta
+     */
+    public boolean isEndGameAlertShown() {
+        return endGameAlertShown;
+    }
+
+    /**
+     * Seadistab mängu lõppetise tõeväärtuse
+     * @param endGameAlertShown
+     */
+    public void setEndGameAlertShown(boolean endGameAlertShown) {
+        this.endGameAlertShown = endGameAlertShown;
     }
 
     /**
@@ -352,6 +369,7 @@ public class GameController {
             out.writeInt(maxOpenedClown);
             out.writeInt(currentWorldId);
             out.writeObject(openedWorldsList);
+            out.writeBoolean(endGameAlertShown);
             LOGGER.info("Game saved successfully.");
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Error saving game: ", e);
@@ -370,6 +388,7 @@ public class GameController {
                 maxOpenedClown = in.readInt();
                 currentWorldId = in.readInt();
                 openedWorldsList = (boolean[]) in.readObject();
+                endGameAlertShown = in.readBoolean(); // Загружаем флаг
                 setCurrentWorld(currentWorldId);
                 gameGUI.updateClownDisplay();
                 gameGUI.updateWorldsDisplay();

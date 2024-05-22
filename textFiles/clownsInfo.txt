@@ -10,12 +10,12 @@ Elizar;5;/world1/Elizar.png
 Anton Patatas;6;/world1/Anton_Patatas.png
 
 //word 2
-A;7;/world2/clown1.png
-B;8;/world2/clown2.png
-G;9;/world2/clown3.png
-D;10;/world2/clown4.png
-L;11;/world2/clown5.png
-P;12;/world2/clown6.png
+Alex;7;/world2/clown1.png
+Boris;8;/world2/clown2.png
+Gregory;9;/world2/clown3.png
+Dagmar;10;/world2/clown4.png
+Lily;11;/world2/clown5.png
+Patrick;12;/world2/clown6.png
 
 //word 3
 Arhny;13;/world3/clown13.png

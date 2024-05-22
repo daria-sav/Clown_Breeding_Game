@@ -38,13 +38,14 @@ public class GameGUI extends Application {
     private boolean firstLaunch = false;
     private BorderPane root; // Peamine paigutus
 
+
     public static void main(String[] args) {
         launch(args);
     }
 
     @Override
     public void start(Stage pealava) {
-        gameController = new GameController(120000, 1, this); // algne saldo ja maailmad, hiljem muuda loogikat maxOpenedClown
+        gameController = new GameController(12, 1, this); // algne saldo ja maailmad, hiljem muuda loogikat maxOpenedClown
 
         root = new BorderPane();
 
@@ -361,11 +362,13 @@ public class GameGUI extends Application {
                 if (dragBounds.intersects(targetBounds)) {
                     ClownsClass targetClown = gameController.getClownById(entry.getKey());
                     if (targetClown != null && draggedClown.getClownLevel() == targetClown.getClownLevel()) {
-                        if (draggedClown.getClownLevel() == 18) {
+                        if (draggedClown.getClownLevel() == 17) {
                             showEndGameAlert();
-                        } else {
-                            gameController.breeding(draggedClown.getId(), targetClown.getId());
                         }
+                        if (draggedClown.getClownLevel() == 18) {
+                            return;
+                        }
+                        gameController.breeding(draggedClown.getId(), targetClown.getId());
                         return; // Peatame edasise otsingu pärast edukat paljunemist
                     }
                 }
@@ -377,9 +380,12 @@ public class GameGUI extends Application {
      * Näitame mängu lõpu märguannet
      */
     private void showEndGameAlert() {
-        Platform.runLater(() -> showAlert("Mängu lõpp", "Märkus! Oled jõudnud mängu lõppu ja avanud kõik klounid!\n" +
-                "Sa ei saa rohkem uusi maailmu avada, kuid võid oma lõbuks kloune edasi aretada ja nendega mängida!\n" +
-                "Aitäh, et mängisid meie mängu!"));
+        if (!gameController.isEndGameAlertShown()) { // Uurime tõeväärtuse enne teatise näitamist
+            Platform.runLater(() -> showAlert("Mängu lõpp", "Märkus! Oled jõudnud mängu lõppu ja avanud kõik klounid!\n" +
+                    "Sa ei saa rohkem uusi maailmu avada, kuid võid oma lõbuks kloune edasi aretada ja nendega mängida!\n" +
+                    "Aitäh, et mängisid meie mängu!"));
+            gameController.setEndGameAlertShown(true); // Muudame tõeväärtuse
+        }
     }
 
     /**
@@ -400,6 +406,10 @@ public class GameGUI extends Application {
         alert.setHeaderText(header);
         alert.setContentText(content);
 
+        // Seadistame dialoogi suuruse
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        alert.getDialogPane().setMinWidth(400);  // Määrame miinimumlaiuse
+
         // Rakendame CSS-stiili
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -407,8 +417,6 @@ public class GameGUI extends Application {
 
         alert.showAndWait();
     }
-
-
 
 
     /**
