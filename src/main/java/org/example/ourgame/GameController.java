@@ -192,26 +192,27 @@ public class GameController {
         List<ClownsClass> availableClowns = new ArrayList<>();
 
         if (currentWorld != null) {
-            int worldMinLevel = currentWorld.getMinClownLevel();
-            int worldMaxLevel = currentWorld.getMaxClownLevel();
-            int maxLevel = 0;
+            int worldMinLevel = currentWorld.getMinClownLevel(); // Praeguse maailma minimaalne klouni tase
+            int worldMaxLevel = currentWorld.getMaxClownLevel(); // Praeguse maailma maksimaalne klouni tase
+            int maxLevel = maxOpenedClown - 2; // Määrake maksimaalne tase, mida saab osta
 
+            // Kui praegune maailm ei ole esimene ja maxOpenedClown on väiksem kui maailma miinimumtase + 2, siis pood on suletud
             if (currentWorldId != 1 && maxOpenedClown < worldMinLevel + 2) {
                 return availableClowns;
-            } else {
-                maxLevel = maxOpenedClown - 2;
-            }
-            if (maxOpenedClown <= worldMinLevel + 2) {
-                if (currentWorldId != 1) {
-                    return availableClowns;
-                }
-                maxLevel = worldMinLevel;
-            } else {
-                maxLevel = maxOpenedClown - 2;
             }
 
-            // Iga taseme jaoks, mis on avatud ja mitte kõrgem kui maksimaalselt avatud tase
-            for (int level = worldMinLevel; level <= maxLevel && level <= worldMaxLevel; level++) {
+            // Uuendame maxLevel, kui see on väiksem kui maailma minimaalne tase
+            if (maxLevel < worldMinLevel) {
+                maxLevel = worldMinLevel;
+            }
+
+            // Uuendame maxLevel, kui see on suurem kui maailma maksimaalne tase
+            if (maxLevel > worldMaxLevel) {
+                maxLevel = worldMaxLevel;
+            }
+
+            // Lisame kõik saadaval olevad klounid vahemikus worldMinLevel kuni maxLevel
+            for (int level = worldMinLevel; level <= maxLevel; level++) {
                 if (clownInfoMap.containsKey(level)) {
                     String[] clownData = clownInfoMap.get(level);
                     availableClowns.add(new ClownsClass(clownData[0], level, clownData[1]));
@@ -220,6 +221,8 @@ public class GameController {
         }
         return availableClowns;
     }
+
+
 
     /**
      * Tagastab kõik avatud klounid
