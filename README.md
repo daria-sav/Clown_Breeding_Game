@@ -23,10 +23,10 @@ They also have access to a gallery of already unlocked characters and the abilit
 
 **Gameplay screenshots**
 
-<img width="706" alt="OurGame2" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/b093ed1d-2d90-4ced-84af-ecce3f5626d3">
+<img width="704" alt="OurGame2" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/262cced0-c865-412b-a446-073a8b2ba6a8">
 
 
-<img width="706" alt="OurGame1" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/32588bb6-bfc6-4bdd-81eb-958493756ba1">
+<img width="702" alt="OurGame1" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/b5515e6a-fe08-4857-99a2-891dac4b748b">
 
 
-<img width="704" alt="OurGame3" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/c299fae0-566f-40be-8d27-64c9f55bb524">
+<img width="702" alt="OurGame3" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/b2fa54e9-126e-474c-8bc0-bd1d06ec691a">
