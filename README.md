@@ -20,3 +20,12 @@ At the beginning of the game, everyone receives a short tutorial: to unlock a ne
 Clowns for crossbreeding can be purchased from the store for the game's currency - clown tears. To get them, you need to hit a clown.
 When a player discovers 6 different types of clowns in one world, the next one opens up to them. In total, there are 3 worlds available in the game.
 They also have access to a gallery of already unlocked characters and the ability to move between open worlds.
+
+**Gameplay screenshots**
+<img width="691" alt="OurGame1" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/468acbd9-1c30-45e2-accf-64edde4e5882">
+
+
+<img width="692" alt="OurGame2" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/46dcbdf9-b0e6-4cd3-86bd-0701ae60cb00">
+
+
+<img width="667" alt="OurGame3" src="https://github.com/daria-sav/Clown_Breeding_Game/assets/145145620/e6084485-0fa7-4bad-a5b2-c8002933ae51">
